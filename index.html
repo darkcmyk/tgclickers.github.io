@@ -1,127 +1,294 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Кликер RPG</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #f7f7f7;
-      padding: 20px;
-      text-align: center;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Эпичный Кликер</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
+
+  /* Градиентный фон с анимацией */
+  body {
+    margin: 0; padding: 0; height: 100vh;
+    background: linear-gradient(-45deg, #6a11cb, #2575fc, #4ade80, #fbc7a4);
+    background-size: 400% 400%;
+    animation: gradientBG 20s ease infinite;
+    font-family: 'Montserrat', sans-serif;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  @keyframes gradientBG {
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+  }
+
+  header {
+    margin-top: 20px;
+    font-size: 2.8rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+  }
+
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90vw;
+    max-width: 480px;
+  }
+
+  #clicker {
+    width: 160px;
+    height: 160px;
+    background: linear-gradient(145deg, #f0f0f3, #cacaca);
+    border-radius: 50%;
+    box-shadow:
+      inset 5px 5px 15px #bebebe,
+      inset -5px -5px 15px #ffffff,
+      10px 10px 20px rgba(0,0,0,0.15);
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4rem;
+    color: #333;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+  }
+  #clicker:active {
+    transform: scale(0.95);
+  }
+
+  #coins {
+    font-size: 3rem;
+    margin: 20px 0 10px 0;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+  }
+
+  /* Контейнеры для магазинов */
+  .shop-container {
+    background: rgba(255 255 255 / 0.15);
+    border-radius: 16px;
+    padding: 15px;
+    width: 100%;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  }
+
+  .shop-container h2 {
+    margin: 0 0 10px 0;
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-align: center;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.4);
+  }
+
+  .item {
+    display: flex;
+    justify-content: space-between;
+    background: rgba(255 255 255 / 0.25);
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    transition: background 0.3s ease;
+    cursor: pointer;
+    user-select: none;
+  }
+  .item:hover {
+    background: rgba(255 255 255 / 0.4);
+  }
+
+  .item > div {
+    font-size: 1.1rem;
+    color: #222;
+    text-shadow: none;
+  }
+
+  .item .price {
+    font-weight: 700;
+    color: #0044cc;
+    min-width: 50px;
+    text-align: right;
+  }
+
+  /* Скин кнопки */
+  #clicker.skin1 {
+    background: radial-gradient(circle at center, #ffd700, #c6a700);
+    box-shadow: 0 0 30px #ffd700aa;
+    color: #222;
+  }
+  #clicker.skin2 {
+    background: radial-gradient(circle at center, #00d4ff, #005c9d);
+    box-shadow: 0 0 30px #00d4ffaa;
+    color: white;
+  }
+  #clicker.skin3 {
+    background: radial-gradient(circle at center, #ff6f91, #ff1e56);
+    box-shadow: 0 0 30px #ff1e56aa;
+    color: white;
+  }
+
+  /* Кнопки скинов */
+  .skins-container {
+    display: flex;
+    justify-content: space-around;
+  }
+  .skin-btn {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    cursor: pointer;
+    box-shadow: 0 3px 7px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease;
+    user-select: none;
+  }
+  .skin-btn:hover {
+    transform: scale(1.1);
+  }
+  .skin-btn.skin1 {
+    background: radial-gradient(circle at center, #ffd700, #c6a700);
+  }
+  .skin-btn.skin2 {
+    background: radial-gradient(circle at center, #00d4ff, #005c9d);
+  }
+  .skin-btn.skin3 {
+    background: radial-gradient(circle at center, #ff6f91, #ff1e56);
+  }
+
+  /* Нижний футер */
+  footer {
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 0.9rem;
+    color: #ddd;
+    user-select: none;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+  }
+
+  /* Адаптив */
+  @media (max-width: 480px) {
+    #clicker {
+      width: 130px;
+      height: 130px;
+      font-size: 2rem;
     }
-    h1 { margin-top: 10px; }
-    #info, #upgrades, #result {
-      background: white;
-      border-radius: 12px;
-      padding: 15px;
-      margin: 10px auto;
-      max-width: 400px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 18px;
-      margin: 10px;
-      cursor: pointer;
-    }
-    .stat {
-      font-weight: bold;
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
 
-<h1>💥 Telegram Кликер</h1>
+<header>Эпичный Кликер</header>
 
-<div id="info">
-  <p>👤 <span id="username">Игрок</span></p>
-  <p>🆔 ID: <span id="userid">???</span></p>
-  <p>📈 Уровень: <span class="stat" id="level">1</span></p>
-  <p>⭐ Опыт: <span class="stat" id="exp">0</span> / <span id="next_exp">10</span></p>
-  <p>💰 Монеты: <span class="stat" id="coins">0</span></p>
-  <p>💪 Сила клика: <span class="stat" id="power">1</span></p>
-</div>
+<main>
+  <div id="coins">Монет: 0</div>
+  <div id="clicker" title="Кликни меня!">👆</div>
 
-<div id="upgrades">
-  <button onclick="clickCoin()">+ Клик!</button><br>
-  <button onclick="upgrade()">Улучшить силу (💰 <span id="upgrade_cost">10</span>)</button>
-</div>
+  <div class="shop-container" id="upgrade-shop">
+    <h2>Магазин улучшений</h2>
+    <div class="item" data-upgrade="power">
+      <div>Сила клика (+1 монету)</div>
+      <div class="price">10</div>
+    </div>
+    <div class="item" data-upgrade="autoClicker">
+      <div>Автокликер (+1 клик в сек)</div>
+      <div class="price">100</div>
+    </div>
+    <div class="item" data-upgrade="bonus">
+      <div>Бонусный множитель (+2 монеты за клик)</div>
+      <div class="price">500</div>
+    </div>
+  </div>
 
-<div id="result">
-  <button onclick="sendToBot()">📤 Отправить результат боту</button>
-</div>
+  <div class="shop-container" id="skins-shop">
+    <h2>Магазин скинов</h2>
+    <div class="skins-container">
+      <div class="skin-btn skin1" data-skin="skin1" title="Золотой скин"></div>
+      <div class="skin-btn skin2" data-skin="skin2" title="Синий скин"></div>
+      <div class="skin-btn skin3" data-skin="skin3" title="Розовый скин"></div>
+    </div>
+  </div>
+</main>
+
+<footer>By dark 20256</footer>
 
 <script>
-  const tg = window.Telegram.WebApp;
-  tg.expand();
+  let coins = 0;
+  let power = 1;
+  let autoClicker = 0;
+  let bonus = 0;
 
-  const state = {
-    username: tg.initDataUnsafe.user?.first_name || "Игрок",
-    userid: tg.initDataUnsafe.user?.id || "???",
-    level: 1,
-    exp: 0,
-    coins: 0,
-    power: 1
+  const coinsDisplay = document.getElementById('coins');
+  const clicker = document.getElementById('clicker');
+  const upgradeShop = document.getElementById('upgrade-shop');
+  const skinsShop = document.getElementById('skins-shop');
+
+  function updateDisplay() {
+    coinsDisplay.textContent = `Монет: ${coins}`;
+  }
+
+  clicker.addEventListener('click', () => {
+    coins += power + bonus;
+    updateDisplay();
+    clicker.classList.add('clicked');
+    setTimeout(() => clicker.classList.remove('clicked'), 150);
+  });
+
+  // Улучшения
+  const upgrades = {
+    power: { cost: 10, level: 0, effect() { power += 1; } },
+    autoClicker: { cost: 100, level: 0, effect() { autoClicker += 1; } },
+    bonus: { cost: 500, level: 0, effect() { bonus += 2; } },
   };
 
-  const nextLevelExp = () => state.level * 10;
-  const upgradeCost = () => state.power * 10;
+  upgradeShop.addEventListener('click', e => {
+    const item = e.target.closest('.item');
+    if (!item) return;
+    const key = item.dataset.upgrade;
+    if (!key) return;
 
-  // Сохранение в localStorage
-  function save() {
-    localStorage.setItem("clicker_state", JSON.stringify(state));
-  }
-
-  function load() {
-    const saved = localStorage.getItem("clicker_state");
-    if (saved) {
-      Object.assign(state, JSON.parse(saved));
-    }
-  }
-
-  function updateUI() {
-    document.getElementById("username").innerText = state.username;
-    document.getElementById("userid").innerText = state.userid;
-    document.getElementById("level").innerText = state.level;
-    document.getElementById("exp").innerText = state.exp;
-    document.getElementById("coins").innerText = state.coins;
-    document.getElementById("power").innerText = state.power;
-    document.getElementById("next_exp").innerText = nextLevelExp();
-    document.getElementById("upgrade_cost").innerText = upgradeCost();
-  }
-
-  function clickCoin() {
-    state.coins += state.power;
-    state.exp += 1;
-    if (state.exp >= nextLevelExp()) {
-      state.exp = 0;
-      state.level += 1;
-    }
-    save();
-    updateUI();
-  }
-
-  function upgrade() {
-    const cost = upgradeCost();
-    if (state.coins >= cost) {
-      state.coins -= cost;
-      state.power += 1;
-      save();
-      updateUI();
+    const upg = upgrades[key];
+    if (coins >= upg.cost) {
+      coins -= upg.cost;
+      upg.level++;
+      upg.cost = Math.floor(upg.cost * 1.7);
+      upg.effect();
+      item.querySelector('.price').textContent = upg.cost;
+      updateDisplay();
     } else {
-      alert("Недостаточно монет!");
+      alert('Недостаточно монет!');
     }
-  }
+  });
 
-  function sendToBot() {
-    const result = `Профиль:\nИмя: ${state.username}\nУровень: ${state.level}\nМонеты: ${state.coins}\nСила: ${state.power}`;
-    tg.sendData(result);
-  }
+  // Автокликер
+  setInterval(() => {
+    if (autoClicker > 0) {
+      coins += autoClicker * (power + bonus);
+      updateDisplay();
+    }
+  }, 1000);
 
-  load();
-  updateUI();
+  // Скины
+  skinsShop.addEventListener('click', e => {
+    const skinBtn = e.target.closest('.skin-btn');
+    if (!skinBtn) return;
+    const skin = skinBtn.dataset.skin;
+    clicker.className = 'skin-btn ' + skin;
+    clicker.classList.remove('skin-btn');
+    clicker.classList.add(skin);
+  });
+
+  updateDisplay();
 </script>
 
 </body>
