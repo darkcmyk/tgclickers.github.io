@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Telegram Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body style="font-family:sans-serif;text-align:center;">
+  <h2>Привет, <span id="username">пользователь</span>!</h2>
+  <button onclick="sendToBot()">Отправить данные боту</button>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    document.getElementById("username").innerText = tg.initDataUnsafe.user?.first_name || "пользователь";
+
+    function sendToBot() {
+      tg.sendData("Привет от мини-приложения!");
+    }
+  </script>
+</body>
+</html>
