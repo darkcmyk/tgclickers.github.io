@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Эпичный Кликер</title>
+<title>Эпичный Кликер с анимацией и звуками</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
 
-  /* Градиентный фон с анимацией */
   body {
     margin: 0; padding: 0; height: 100vh;
     background: linear-gradient(-45deg, #6a11cb, #2575fc, #4ade80, #fbc7a4);
@@ -42,6 +41,7 @@
     justify-content: center;
     width: 90vw;
     max-width: 480px;
+    position: relative;
   }
 
   #clicker {
@@ -67,6 +67,25 @@
   #clicker:active {
     transform: scale(0.95);
   }
+  /* Анимация клика - вспышка */
+  #clicker.clicked::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 150%; height: 150%;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: flash 0.4s ease forwards;
+    pointer-events: none;
+    z-index: 1;
+  }
+  @keyframes flash {
+    to {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0;
+    }
+  }
 
   #coins {
     font-size: 3rem;
@@ -74,7 +93,6 @@
     text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
   }
 
-  /* Контейнеры для магазинов */
   .shop-container {
     background: rgba(255 255 255 / 0.15);
     border-radius: 16px;
@@ -121,7 +139,6 @@
     text-align: right;
   }
 
-  /* Скин кнопки */
   #clicker.skin1 {
     background: radial-gradient(circle at center, #ffd700, #c6a700);
     box-shadow: 0 0 30px #ffd700aa;
@@ -138,7 +155,6 @@
     color: white;
   }
 
-  /* Кнопки скинов */
   .skins-container {
     display: flex;
     justify-content: space-around;
@@ -165,7 +181,6 @@
     background: radial-gradient(circle at center, #ff6f91, #ff1e56);
   }
 
-  /* Нижний футер */
   footer {
     width: 100%;
     text-align: center;
@@ -176,7 +191,35 @@
     text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
   }
 
-  /* Адаптив */
+  /* Уведомления снизу */
+  #notifications {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 320px;
+    width: 90vw;
+    z-index: 9999;
+  }
+  .notification {
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 12px 18px;
+    margin-top: 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+    opacity: 0;
+    animation: slideIn 0.4s forwards, fadeOut 0.4s 3s forwards;
+  }
+  @keyframes slideIn {
+    from {opacity: 0; transform: translateX(-50%) translateY(50px);}
+    to {opacity: 1; transform: translateX(-50%) translateY(0);}
+  }
+  @keyframes fadeOut {
+    to {opacity: 0;}
+  }
+
   @media (max-width: 480px) {
     #clicker {
       width: 130px;
@@ -188,7 +231,7 @@
 </head>
 <body>
 
-<header>Эпичный Кликер</header>
+<header>Dark Combat || Matrix lox!</header>
 
 <main>
   <div id="coins">Монет: 0</div>
@@ -210,85 +253,130 @@
     </div>
   </div>
 
-  <div class="shop-container" id="skins-shop">
-    <h2>Магазин скинов</h2>
+  <div class="shop-container">
+    <h2>Скины</h2>
     <div class="skins-container">
-      <div class="skin-btn skin1" data-skin="skin1" title="Золотой скин"></div>
-      <div class="skin-btn skin2" data-skin="skin2" title="Синий скин"></div>
-      <div class="skin-btn skin3" data-skin="skin3" title="Розовый скин"></div>
+      <div class="skin-btn skin1" data-skin="skin1" title="Золотой"></div>
+      <div class="skin-btn skin2" data-skin="skin2" title="Синий"></div>
+      <div class="skin-btn skin3" data-skin="skin3" title="Красный"></div>
     </div>
   </div>
 </main>
 
-<footer>By dark 20256</footer>
+<div id="notifications"></div>
+
+<footer>Создано с ❤️ твоим помощником ChatGPT</footer>
 
 <script>
-  let coins = 0;
-  let power = 1;
-  let autoClicker = 0;
-  let bonus = 0;
+// Основные переменные
+let coins = 0;
+let power = 1;
+let autoClicker = 0;
+let bonus = 0;
 
-  const coinsDisplay = document.getElementById('coins');
-  const clicker = document.getElementById('clicker');
-  const upgradeShop = document.getElementById('upgrade-shop');
-  const skinsShop = document.getElementById('skins-shop');
+const coinsDisplay = document.getElementById('coins');
+const clicker = document.getElementById('clicker');
+const upgradeShop = document.getElementById('upgrade-shop');
+const notifications = document.getElementById('notifications');
 
-  function updateDisplay() {
-    coinsDisplay.textContent = `Монет: ${coins}`;
+const clickSound = new Audio('https://actions.google.com/sounds/v1/cartoon/pop.ogg');
+
+// Функция обновления отображения монет
+function updateCoins() {
+  coinsDisplay.textContent = `Монет: ${coins}`;
+}
+
+// Функция уведомления
+function notify(message) {
+  const note = document.createElement('div');
+  note.classList.add('notification');
+  note.textContent = message;
+  notifications.appendChild(note);
+  setTimeout(() => {
+    note.remove();
+  }, 3400);
+}
+
+// Функция анимации клика
+function animateClick() {
+  clicker.classList.add('clicked');
+  setTimeout(() => {
+    clicker.classList.remove('clicked');
+  }, 400);
+}
+
+// Обработчик клика
+clicker.addEventListener('click', () => {
+  // Звук клика
+  clickSound.currentTime = 0;
+  clickSound.play();
+
+  // Добавляем монеты с бонусом и силой
+  coins += power + bonus;
+  updateCoins();
+
+  animateClick();
+  notify(`+${power + bonus} монет!`);
+});
+
+// Обработчик покупки улучшений
+upgradeShop.addEventListener('click', e => {
+  const item = e.target.closest('.item');
+  if (!item) return;
+
+  const upgrade = item.getAttribute('data-upgrade');
+  let price = Number(item.querySelector('.price').textContent);
+
+  if (coins < price) {
+    notify('Недостаточно монет!');
+    return;
   }
 
-  clicker.addEventListener('click', () => {
-    coins += power + bonus;
-    updateDisplay();
-    clicker.classList.add('clicked');
-    setTimeout(() => clicker.classList.remove('clicked'), 150);
-  });
+  coins -= price;
 
-  // Улучшения
-  const upgrades = {
-    power: { cost: 10, level: 0, effect() { power += 1; } },
-    autoClicker: { cost: 100, level: 0, effect() { autoClicker += 1; } },
-    bonus: { cost: 500, level: 0, effect() { bonus += 2; } },
-  };
+  switch(upgrade) {
+    case 'power':
+      power += 1;
+      price = Math.floor(price * 1.5);
+      item.querySelector('.price').textContent = price;
+      notify('Сила клика увеличена!');
+      break;
+    case 'autoClicker':
+      autoClicker += 1;
+      price = Math.floor(price * 1.7);
+      item.querySelector('.price').textContent = price;
+      notify('Автокликер активирован!');
+      break;
+    case 'bonus':
+      bonus += 2;
+      price = Math.floor(price * 2);
+      item.querySelector('.price').textContent = price;
+      notify('Бонусный множитель увеличен!');
+      break;
+  }
+  updateCoins();
+});
 
-  upgradeShop.addEventListener('click', e => {
-    const item = e.target.closest('.item');
-    if (!item) return;
-    const key = item.dataset.upgrade;
-    if (!key) return;
+// Автокликер, если есть
+setInterval(() => {
+  if (autoClicker > 0) {
+    coins += autoClicker * (power + bonus);
+    updateCoins();
+    notify(`Автокликер: +${autoClicker * (power + bonus)} монет`);
+  }
+}, 1000);
 
-    const upg = upgrades[key];
-    if (coins >= upg.cost) {
-      coins -= upg.cost;
-      upg.level++;
-      upg.cost = Math.floor(upg.cost * 1.7);
-      upg.effect();
-      item.querySelector('.price').textContent = upg.cost;
-      updateDisplay();
-    } else {
-      alert('Недостаточно монет!');
-    }
-  });
-
-  // Автокликер
-  setInterval(() => {
-    if (autoClicker > 0) {
-      coins += autoClicker * (power + bonus);
-      updateDisplay();
-    }
-  }, 1000);
-
-  // Скины
-  skinsShop.addEventListener('click', e => {
-    const skinBtn = e.target.closest('.skin-btn');
-    if (!skinBtn) return;
-    const skin = skinBtn.dataset.skin;
-    clicker.className = 'skin-btn ' + skin;
-    clicker.classList.remove('skin-btn');
+// Обработка смены скина
+document.querySelectorAll('.skin-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const skin = btn.getAttribute('data-skin');
+    clicker.className = '';
     clicker.classList.add(skin);
+    notify(`Скин сменен на "${btn.title}"`);
   });
+});
 
-  updateDisplay();
+updateCoins();
 </script>
 
 </body>
