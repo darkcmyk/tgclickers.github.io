@@ -2,22 +2,127 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Telegram Mini App</title>
+  <title>Кликер RPG</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
-<body style="font-family:sans-serif;text-align:center;">
-  <h2>Привет, <span id="username">пользователь</span>!</h2>
-  <button onclick="sendToBot()">Отправить данные боту</button>
-
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-
-    document.getElementById("username").innerText = tg.initDataUnsafe.user?.first_name || "пользователь";
-
-    function sendToBot() {
-      tg.sendData("Привет от мини-приложения!");
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f7f7f7;
+      padding: 20px;
+      text-align: center;
     }
-  </script>
+    h1 { margin-top: 10px; }
+    #info, #upgrades, #result {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      margin: 10px auto;
+      max-width: 400px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin: 10px;
+      cursor: pointer;
+    }
+    .stat {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>💥 Telegram Кликер</h1>
+
+<div id="info">
+  <p>👤 <span id="username">Игрок</span></p>
+  <p>🆔 ID: <span id="userid">???</span></p>
+  <p>📈 Уровень: <span class="stat" id="level">1</span></p>
+  <p>⭐ Опыт: <span class="stat" id="exp">0</span> / <span id="next_exp">10</span></p>
+  <p>💰 Монеты: <span class="stat" id="coins">0</span></p>
+  <p>💪 Сила клика: <span class="stat" id="power">1</span></p>
+</div>
+
+<div id="upgrades">
+  <button onclick="clickCoin()">+ Клик!</button><br>
+  <button onclick="upgrade()">Улучшить силу (💰 <span id="upgrade_cost">10</span>)</button>
+</div>
+
+<div id="result">
+  <button onclick="sendToBot()">📤 Отправить результат боту</button>
+</div>
+
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.expand();
+
+  const state = {
+    username: tg.initDataUnsafe.user?.first_name || "Игрок",
+    userid: tg.initDataUnsafe.user?.id || "???",
+    level: 1,
+    exp: 0,
+    coins: 0,
+    power: 1
+  };
+
+  const nextLevelExp = () => state.level * 10;
+  const upgradeCost = () => state.power * 10;
+
+  // Сохранение в localStorage
+  function save() {
+    localStorage.setItem("clicker_state", JSON.stringify(state));
+  }
+
+  function load() {
+    const saved = localStorage.getItem("clicker_state");
+    if (saved) {
+      Object.assign(state, JSON.parse(saved));
+    }
+  }
+
+  function updateUI() {
+    document.getElementById("username").innerText = state.username;
+    document.getElementById("userid").innerText = state.userid;
+    document.getElementById("level").innerText = state.level;
+    document.getElementById("exp").innerText = state.exp;
+    document.getElementById("coins").innerText = state.coins;
+    document.getElementById("power").innerText = state.power;
+    document.getElementById("next_exp").innerText = nextLevelExp();
+    document.getElementById("upgrade_cost").innerText = upgradeCost();
+  }
+
+  function clickCoin() {
+    state.coins += state.power;
+    state.exp += 1;
+    if (state.exp >= nextLevelExp()) {
+      state.exp = 0;
+      state.level += 1;
+    }
+    save();
+    updateUI();
+  }
+
+  function upgrade() {
+    const cost = upgradeCost();
+    if (state.coins >= cost) {
+      state.coins -= cost;
+      state.power += 1;
+      save();
+      updateUI();
+    } else {
+      alert("Недостаточно монет!");
+    }
+  }
+
+  function sendToBot() {
+    const result = `Профиль:\nИмя: ${state.username}\nУровень: ${state.level}\nМонеты: ${state.coins}\nСила: ${state.power}`;
+    tg.sendData(result);
+  }
+
+  load();
+  updateUI();
+</script>
+
 </body>
 </html>
