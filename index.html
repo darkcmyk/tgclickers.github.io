@@ -3,381 +3,427 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Эпичный Кликер с анимацией и звуками</title>
+<title>Combat Dark</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
-
+  /* Сброс */
+  * {
+    box-sizing: border-box;
+  }
   body {
-    margin: 0; padding: 0; height: 100vh;
-    background: linear-gradient(-45deg, #6a11cb, #2575fc, #4ade80, #fbc7a4);
-    background-size: 400% 400%;
-    animation: gradientBG 20s ease infinite;
-    font-family: 'Montserrat', sans-serif;
-    color: #fff;
+    margin: 0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #ddd;
+    overflow-x: hidden;
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
   }
-
-  @keyframes gradientBG {
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
-  }
-
   header {
-    margin-top: 20px;
-    font-size: 2.8rem;
+    background: #1a122f;
+    padding: 20px 40px;
+    font-size: 2.5rem;
     font-weight: 700;
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+    letter-spacing: 3px;
+    color: #bb86fc;
+    user-select: none;
+    text-shadow: 0 0 8px #bb86fc;
   }
-
   main {
     flex: 1;
+    padding: 20px 40px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 90vw;
-    max-width: 480px;
-    position: relative;
+    gap: 20px;
+  }
+  
+  /* Вкладки */
+  nav {
+    display: flex;
+    gap: 25px;
+    border-bottom: 1px solid #bb86fc33;
+  }
+  nav button {
+    background: none;
+    border: none;
+    padding: 12px 20px;
+    color: #aaa;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    user-select: none;
+  }
+  nav button.active {
+    color: #bb86fc;
+    border-color: #bb86fc;
+    font-weight: 700;
+  }
+  nav button:hover:not(.active) {
+    color: #d0b9ffcc;
   }
 
+  /* Контейнеры вкладок */
+  section.tab-content {
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+  }
+  section.tab-content.active {
+    display: flex;
+  }
+
+  /* Кликер */
   #clicker {
     width: 160px;
     height: 160px;
-    background: linear-gradient(145deg, #f0f0f3, #cacaca);
     border-radius: 50%;
-    box-shadow:
-      inset 5px 5px 15px #bebebe,
-      inset -5px -5px 15px #ffffff,
-      10px 10px 20px rgba(0,0,0,0.15);
+    background: linear-gradient(145deg, #3a0ca3, #6a0dad);
+    box-shadow: 0 0 15px #9a4dffcc;
+    margin: 0 auto;
     cursor: pointer;
-    transition: transform 0.1s ease;
     display: flex;
-    align-items: center;
     justify-content: center;
-    font-size: 2.4rem;
-    color: #333;
+    align-items: center;
+    color: white;
+    font-size: 2rem;
+    font-weight: 700;
     user-select: none;
     position: relative;
-    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
   }
-  #clicker:active {
-    transform: scale(0.95);
-  }
-  /* Анимация клика - вспышка */
-  #clicker.clicked::after {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 150%; height: 150%;
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    animation: flash 0.4s ease forwards;
-    pointer-events: none;
-    z-index: 1;
-  }
-  @keyframes flash {
-    to {
-      transform: translate(-50%, -50%) scale(1);
-      opacity: 0;
-    }
+  #clicker.clicked {
+    transform: scale(0.92);
+    box-shadow: 0 0 30px #bb86fc;
   }
 
-  #coins {
-    font-size: 3rem;
-    margin: 20px 0 10px 0;
-    text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
-  }
-
-  .shop-container {
-    background: rgba(255 255 255 / 0.15);
-    border-radius: 16px;
-    padding: 15px;
-    width: 100%;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-  }
-
-  .shop-container h2 {
-    margin: 0 0 10px 0;
-    font-weight: 700;
-    font-size: 1.5rem;
-    text-align: center;
-    text-shadow: 1px 1px 5px rgba(0,0,0,0.4);
-  }
-
-  .item {
+  /* Магазин */
+  #upgrade-shop {
     display: flex;
-    justify-content: space-between;
-    background: rgba(255 255 255 / 0.25);
-    padding: 10px 15px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-    transition: background 0.3s ease;
-    cursor: pointer;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .item {
+    background: #1a122f;
+    border: 1.5px solid #bb86fc44;
+    border-radius: 12px;
+    padding: 15px 25px;
+    width: 160px;
+    text-align: center;
+    color: #bb86fccc;
+    font-weight: 600;
     user-select: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
   }
   .item:hover {
-    background: rgba(255 255 255 / 0.4);
+    background-color: #391d7a88;
+    border-color: #bb86fcaa;
+  }
+  .price {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    color: #d1b8ffcc;
   }
 
-  .item > div {
-    font-size: 1.1rem;
-    color: #222;
-    text-shadow: none;
-  }
-
-  .item .price {
-    font-weight: 700;
-    color: #0044cc;
-    min-width: 50px;
-    text-align: right;
-  }
-
-  #clicker.skin1 {
-    background: radial-gradient(circle at center, #ffd700, #c6a700);
-    box-shadow: 0 0 30px #ffd700aa;
-    color: #222;
-  }
-  #clicker.skin2 {
-    background: radial-gradient(circle at center, #00d4ff, #005c9d);
-    box-shadow: 0 0 30px #00d4ffaa;
-    color: white;
-  }
-  #clicker.skin3 {
-    background: radial-gradient(circle at center, #ff6f91, #ff1e56);
-    box-shadow: 0 0 30px #ff1e56aa;
-    color: white;
-  }
-
+  /* Скины */
   .skins-container {
     display: flex;
-    justify-content: space-around;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 10px;
   }
   .skin-btn {
-    width: 50px; height: 50px;
-    border-radius: 50%;
-    border: 2px solid #fff;
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
     cursor: pointer;
-    box-shadow: 0 3px 7px rgba(0,0,0,0.3);
-    transition: transform 0.2s ease;
-    user-select: none;
+    box-shadow: 0 0 10px #6a0dadaa;
+    transition: box-shadow 0.3s ease;
   }
   .skin-btn:hover {
-    transform: scale(1.1);
+    box-shadow: 0 0 20px #bb86fcff;
   }
-  .skin-btn.skin1 {
-    background: radial-gradient(circle at center, #ffd700, #c6a700);
+  .skin1 {
+    background: linear-gradient(145deg, #f3c623, #d4a71b);
   }
-  .skin-btn.skin2 {
-    background: radial-gradient(circle at center, #00d4ff, #005c9d);
+  .skin2 {
+    background: linear-gradient(145deg, #1864ab, #0d3b66);
   }
-  .skin-btn.skin3 {
-    background: radial-gradient(circle at center, #ff6f91, #ff1e56);
+  .skin3 {
+    background: linear-gradient(145deg, #b00020, #7a0014);
   }
 
-  footer {
-    width: 100%;
+  /* Монеты */
+  #coins {
+    font-size: 1.5rem;
+    font-weight: 700;
     text-align: center;
-    padding: 10px 0;
-    font-size: 0.9rem;
-    color: #ddd;
+    margin-bottom: 12px;
+    letter-spacing: 1.3px;
+    text-shadow: 0 0 6px #bb86fcaa;
     user-select: none;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
   }
 
-  /* Уведомления снизу */
+  /* Уведомления - маленькие и почти прозрачные */
   #notifications {
     position: fixed;
-    bottom: 20px;
+    bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
-    max-width: 320px;
-    width: 90vw;
-    z-index: 9999;
+    width: auto;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    pointer-events: none;
+    z-index: 1000;
   }
   .notification {
-    background: rgba(0,0,0,0.7);
-    color: #fff;
-    padding: 12px 18px;
-    margin-top: 8px;
-    border-radius: 12px;
+    background: rgba(187, 134, 252, 0.15);
+    color: #bb86fccc;
+    font-size: 0.7rem;
     font-weight: 600;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
-    opacity: 0;
-    animation: slideIn 0.4s forwards, fadeOut 0.4s 3s forwards;
+    padding: 4px 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px #bb86fc44;
+    opacity: 0.7;
+    animation: fadeinout 3s ease forwards;
   }
-  @keyframes slideIn {
-    from {opacity: 0; transform: translateX(-50%) translateY(50px);}
-    to {opacity: 1; transform: translateX(-50%) translateY(0);}
-  }
-  @keyframes fadeOut {
-    to {opacity: 0;}
+  @keyframes fadeinout {
+    0% {opacity: 0; transform: translateY(10px);}
+    10%, 90% {opacity: 0.7; transform: translateY(0);}
+    100% {opacity: 0; transform: translateY(-10px);}
   }
 
-  @media (max-width: 480px) {
-    #clicker {
-      width: 130px;
-      height: 130px;
-      font-size: 2rem;
-    }
+  /* Футер */
+  footer {
+    background: #1a122f;
+    color: #bb86fcaa;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 10px 0;
+    user-select: none;
+    letter-spacing: 1.1px;
+  }
+
+  /* Частицы (фон) */
+  #particles-js {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
   }
 </style>
 </head>
 <body>
 
-<header>Dark Combat || Matrix lox!</header>
+<header>Combat Dark</header>
+
+<nav>
+  <button class="tab-btn active" data-tab="clicker-tab">Кликер</button>
+  <button class="tab-btn" data-tab="shop-tab">Магазин</button>
+  <button class="tab-btn" data-tab="skins-tab">Скины</button>
+</nav>
 
 <main>
-  <div id="coins">Монет: 0</div>
-  <div id="clicker" title="Кликни меня!">👆</div>
+  <section id="clicker-tab" class="tab-content active">
+    <div id="coins">Монет: 0</div>
+    <div id="clicker" title="Кликни меня!">Клик</div>
+  </section>
 
-  <div class="shop-container" id="upgrade-shop">
-    <h2>Магазин улучшений</h2>
-    <div class="item" data-upgrade="power">
-      <div>Сила клика (+1 монету)</div>
-      <div class="price">10</div>
+  <section id="shop-tab" class="tab-content">
+    <div id="upgrade-shop">
+      <div class="item" data-upgrade="power" title="Увеличить силу клика">
+        Сила клика<br />
+        <span class="price">10</span> монет
+      </div>
+      <div class="item" data-upgrade="autoClicker" title="Автокликер">
+        Автокликер<br />
+        <span class="price">25</span> монет
+      </div>
+      <div class="item" data-upgrade="bonus" title="Бонусный множитель">
+        Бонус<br />
+        <span class="price">50</span> монет
+      </div>
     </div>
-    <div class="item" data-upgrade="autoClicker">
-      <div>Автокликер (+1 клик в сек)</div>
-      <div class="price">100</div>
-    </div>
-    <div class="item" data-upgrade="bonus">
-      <div>Бонусный множитель (+2 монеты за клик)</div>
-      <div class="price">500</div>
-    </div>
-  </div>
+  </section>
 
-  <div class="shop-container">
-    <h2>Скины</h2>
+  <section id="skins-tab" class="tab-content">
+    <h2 style="text-align:center; color:#bb86fccc;">Скины для кнопки</h2>
     <div class="skins-container">
       <div class="skin-btn skin1" data-skin="skin1" title="Золотой"></div>
       <div class="skin-btn skin2" data-skin="skin2" title="Синий"></div>
       <div class="skin-btn skin3" data-skin="skin3" title="Красный"></div>
     </div>
-  </div>
+  </section>
 </main>
 
 <div id="notifications"></div>
 
-<footer>Создано с ❤️ твоим помощником ChatGPT</footer>
+<footer>С любовью Dark 2025 ©</footer>
+
+<!-- Частицы JS -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
+  // Инициализация партиклов (черно-фиолетовые, неоновые)
+  particlesJS("particles-js", {
+    "particles": {
+      "number": {
+        "value": 50,
+        "density": {"enable": true, "value_area": 800}
+      },
+      "color": {"value": ["#bb86fc", "#7c4dff", "#3f0071"]},
+      "shape": {
+        "type": "circle",
+        "stroke": {"width": 0, "color": "#000000"},
+      },
+      "opacity": {
+        "value": 0.15,
+        "random": true,
+        "anim": {"enable": false}
+      },
+      "size": {
+        "value": 3,
+        "random": true,
+        "anim": {"enable": false}
+      },
+      "move": {
+        "enable": true,
+        "speed": 0.5,
+        "direction": "none",
+        "random": true,
+        "straight": false,
+        "out_mode": "out"
+      }
+    },
+    "interactivity": {
+      "detect_on": "canvas",
+      "events": {
+        "onhover": {"enable": false},
+        "onclick": {"enable": false},
+        "resize": true
+      }
+    },
+    "retina_detect": true
+  });
+</script>
 
 <script>
-// Основные переменные
-let coins = 0;
-let power = 1;
-let autoClicker = 0;
-let bonus = 0;
+  // Переменные игры
+  let coins = 0;
+  let power = 1;
+  let autoClicker = 0;
+  let bonus = 0;
 
-const coinsDisplay = document.getElementById('coins');
-const clicker = document.getElementById('clicker');
-const upgradeShop = document.getElementById('upgrade-shop');
-const notifications = document.getElementById('notifications');
+  const coinsDisplay = document.getElementById('coins');
+  const clicker = document.getElementById('clicker');
+  const upgradeShop = document.getElementById('upgrade-shop');
+  const notifications = document.getElementById('notifications');
 
-const clickSound = new Audio('https://actions.google.com/sounds/v1/cartoon/pop.ogg');
-
-// Функция обновления отображения монет
-function updateCoins() {
-  coinsDisplay.textContent = `Монет: ${coins}`;
-}
-
-// Функция уведомления
-function notify(message) {
-  const note = document.createElement('div');
-  note.classList.add('notification');
-  note.textContent = message;
-  notifications.appendChild(note);
-  setTimeout(() => {
-    note.remove();
-  }, 3400);
-}
-
-// Функция анимации клика
-function animateClick() {
-  clicker.classList.add('clicked');
-  setTimeout(() => {
-    clicker.classList.remove('clicked');
-  }, 400);
-}
-
-// Обработчик клика
-clicker.addEventListener('click', () => {
-  // Звук клика
-  clickSound.currentTime = 0;
-  clickSound.play();
-
-  // Добавляем монеты с бонусом и силой
-  coins += power + bonus;
-  updateCoins();
-
-  animateClick();
-  notify(`+${power + bonus} монет!`);
-});
-
-// Обработчик покупки улучшений
-upgradeShop.addEventListener('click', e => {
-  const item = e.target.closest('.item');
-  if (!item) return;
-
-  const upgrade = item.getAttribute('data-upgrade');
-  let price = Number(item.querySelector('.price').textContent);
-
-  if (coins < price) {
-    notify('Недостаточно монет!');
-    return;
+  // Обновление монет
+  function updateCoins() {
+    coinsDisplay.textContent = `Монет: ${coins}`;
   }
 
-  coins -= price;
-
-  switch(upgrade) {
-    case 'power':
-      power += 1;
-      price = Math.floor(price * 1.5);
-      item.querySelector('.price').textContent = price;
-      notify('Сила клика увеличена!');
-      break;
-    case 'autoClicker':
-      autoClicker += 1;
-      price = Math.floor(price * 1.7);
-      item.querySelector('.price').textContent = price;
-      notify('Автокликер активирован!');
-      break;
-    case 'bonus':
-      bonus += 2;
-      price = Math.floor(price * 2);
-      item.querySelector('.price').textContent = price;
-      notify('Бонусный множитель увеличен!');
-      break;
+  // Уведомления - теперь не вызываются при кликах на кнопку клика
+  function notify(message) {
+    const note = document.createElement('div');
+    note.classList.add('notification');
+    note.textContent = message;
+    notifications.appendChild(note);
+    setTimeout(() => note.remove(), 3000);
   }
-  updateCoins();
-});
 
-// Автокликер, если есть
-setInterval(() => {
-  if (autoClicker > 0) {
-    coins += autoClicker * (power + bonus);
+  // Анимация клика кнопки
+  function animateClick() {
+    clicker.classList.add('clicked');
+    setTimeout(() => clicker.classList.remove('clicked'), 200);
+  }
+
+  // Обработчик клика на кнопку клика (без уведомлений)
+  clicker.addEventListener('click', () => {
+    coins += power + bonus;
     updateCoins();
-    notify(`Автокликер: +${autoClicker * (power + bonus)} монет`);
-  }
-}, 1000);
-
-// Обработка смены скина
-document.querySelectorAll('.skin-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const skin = btn.getAttribute('data-skin');
-    clicker.className = '';
-    clicker.classList.add(skin);
-    notify(`Скин сменен на "${btn.title}"`);
+    animateClick();
   });
-});
 
-updateCoins();
+  // Обработка покупок в магазине
+  upgradeShop.addEventListener('click', e => {
+    const item = e.target.closest('.item');
+    if (!item) return;
+
+    const upgrade = item.getAttribute('data-upgrade');
+    let price = Number(item.querySelector('.price').textContent);
+
+    if (coins < price) {
+      notify('Недостаточно монет!');
+      return;
+    }
+
+    coins -= price;
+
+    switch(upgrade) {
+      case 'power':
+        power += 1;
+        price = Math.floor(price * 1.5);
+        item.querySelector('.price').textContent = price;
+        notify('Сила клика увеличена!');
+        break;
+      case 'autoClicker':
+        autoClicker += 1;
+        price = Math.floor(price * 1.7);
+        item.querySelector('.price').textContent = price;
+        notify('Автокликер активирован!');
+        break;
+      case 'bonus':
+        bonus += 2;
+        price = Math.floor(price * 2);
+        item.querySelector('.price').textContent = price;
+        notify('Бонусный множитель увеличен!');
+        break;
+    }
+    updateCoins();
+  });
+
+  // Автокликер (каждую секунду)
+  setInterval(() => {
+    if (autoClicker > 0) {
+      coins += autoClicker * (power + bonus);
+      updateCoins();
+      notify(`Автокликер: +${autoClicker * (power + bonus)} монет`);
+    }
+  }, 1000);
+
+  // Обработка смены скина
+  document.querySelectorAll('.skin-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const skin = btn.getAttribute('data-skin');
+      clicker.className = '';
+      clicker.classList.add(skin);
+    });
+  });
+
+  // Вкладки
+  const tabs = document.querySelectorAll('.tab-btn');
+  const contents = document.querySelectorAll('.tab-content');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+    });
+  });
 </script>
+
+<!-- Контейнер для партиклов -->
+<div id="particles-js"></div>
 
 </body>
 </html>
