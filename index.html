@@ -1,90 +1,86 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pay with TON</title>
+  <meta charset="UTF-8">
+  <title>Dark TON Магазин</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- TonConnect UI -->
+  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+
+  <!-- Стили -->
   <style>
     body {
-      margin:0; padding:0;
-      background:radial-gradient(circle at center, #1a001f, #000);
-      color: #fff;
-      font-family: 'Orbitron', sans-serif;
-      display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
-      height:100vh;
-      text-align:center;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0d011a, #1b0033);
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
-    h1 { font-size:2.5rem; margin-bottom:20px; }
-    button {
-      padding:15px 30px;
-      font-size:1.2rem;
-      margin:10px;
-      border:none;
-      border-radius:10px;
-      background:linear-gradient(45deg,#8a2be2,#4b0082);
-      cursor:pointer;
-      color:#fff;
-      box-shadow:0 0 20px #8a2be2;
-      transition:all .3s ease;
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 0.2em;
+      background: linear-gradient(90deg, #ad00ff, #7600d9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    button:hover { transform:scale(1.05); box-shadow:0 0 40px #b23cff; }
-    #footer {
-      position:absolute; bottom:10px;
-      color:#aaa; font-size:.9rem;
+
+    p {
+      opacity: 0.8;
+      font-size: 1.1em;
+      margin-bottom: 40px;
+    }
+
+    #ton-connect-button {
+      scale: 1.2;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 0.9em;
+      opacity: 0.6;
+    }
+
+    .stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: transparent url('https://i.ibb.co/xLzmYP6/stars.gif') repeat top center;
+      background-size: cover;
+      opacity: 0.15;
+      z-index: 0;
+    }
+
+    main {
+      z-index: 1;
+      text-align: center;
     }
   </style>
 </head>
 <body>
+  <div class="stars"></div>
+  <main>
+    <h1>Combat Dark Store</h1>
+    <p>Подключи свой TON кошелёк для оплаты</p>
+    <div id="ton-connect-button"></div>
+  </main>
+  <footer>С любовью © Dark 2025</footer>
 
-<h1>Оплатить 1 TON</h1>
-<button id="connectBtn">Подключить TON‑кошелёк</button><br/>
-<button id="payBtn" disabled>Оплатить 1 TON</button>
+  <script>
+    const tonConnect = new TonConnectUI.TonConnectUI({
+      manifestUrl: "https://darkcmyk.github.io/tgclickers.github.io/tonconnect-manifest.json",
+      buttonRootId: "ton-connect-button"
+    });
 
-<div id="footer">С любовью Dark 2025 ©</div>
-
-<script src="https://unpkg.com/@tonconnect/ui/dist/tonconnect-ui/index.umd.js"></script>
-<script>
-  const { TonConnectUI } = window;
-
-  const tonConnect = new TonConnectUI({
-    manifestUrl: location.origin + '/tonconnect-manifest.json',
-  });
-
-  const connectBtn = document.getElementById('connectBtn');
-  const payBtn = document.getElementById('payBtn');
-
-  let wallet;
-
-  connectBtn.onclick = async () => {
-    try {
-      wallet = await tonConnect.connect();
-      alert(`🚀 Подключено к кошельку ${wallet.account.address}`);
-      connectBtn.textContent = 'Кошелёк подключён';
-      payBtn.disabled = false;
-    } catch (err) {
-      alert('Ошибка подключения: '+err);
-    }
-  };
-
-  payBtn.onclick = async () => {
-    const params = {
-      to: 'UQBfLcNf5TZZb6SEerk0Cr1V2AawL4glN0IG5DlO8mMyb7Uq',
-      amount: '1000000000',
-      text: 'Оплата 1 TON — Dark Shop'
-    };
-
-    try {
-      const result = await tonConnect.sendTransaction({
-        validUntil: Math.floor(Date.now()/1000) + 60,
-        messages: [params]
-      });
-      alert('✅ Оплата прошла успешно! Hash: ' + result.inMessageHash);
-    } catch (err) {
-      alert('❌ Оплата не завершена: ' + err);
-    }
-  };
-</script>
-
+    tonConnect.ui();
+  </script>
 </body>
 </html>
