@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Telegram TON WebApp</title>
+  <title>TON Оплата</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="https://unpkg.com/@tonconnect/sdk@latest"></script>
+  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
   <style>
     body {
       font-family: sans-serif;
@@ -34,20 +34,21 @@
   </style>
 </head>
 <body>
-  <h2>Оплатите 0.5 TON</h2>
-  <button id="connect-wallet">🔌 Подключить TON кошелек</button>
+  <h2>Оплата 0.5 TON</h2>
+
+  <div id="connect-button"></div>
   <div id="wallet-address"></div>
+
   <button id="pay" disabled>💸 Оплатить 0.5 TON</button>
 
   <script>
-    // Telegram WebApp init
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    // TON Connect init
+    const connectButtonId = 'connect-button';
     const tonConnect = new TON_CONNECT_UI.TonConnectUI({
-      manifestUrl: 'https://raw.githubusercontent.com/ton-community/tutorials/main/07-wallet-integration/tonconnect-manifest.json',
-      buttonRootId: 'connect-wallet',
+      manifestUrl: 'https://darkcmyk.github.io/tgclickers.github.io/tonconnect-manifest.json',
+      buttonRootId: connectButtonId
     });
 
     const payButton = document.getElementById("pay");
@@ -70,15 +71,15 @@
           {
             address: "UQBfLcNf5TZZb6SEerk0Cr1V2AawL4glN0IG5DlO8mMyb7Uq",
             amount: (0.5 * 1e9).toString(),
-          },
-        ],
+          }
+        ]
       };
 
       try {
         await tonConnect.sendTransaction(tx);
-        tg.showAlert("✅ Транзакция отправлена!");
+        tg.showAlert("✅ Оплата отправлена!");
       } catch (err) {
-        tg.showAlert("❌ Ошибка: " + err.message);
+        tg.showAlert("❌ Ошибка оплаты: " + err.message);
       }
     };
   </script>
