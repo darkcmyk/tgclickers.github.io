@@ -69,10 +69,10 @@
   </div>
 
   <div class="content">
-    <h2>Оплата 0.5 TON</h2>
+    <h2>Оплата 0.1 TON</h2>
     <div class="balance" id="donated-balance">Вы задонатили: 0 TON</div>
     <div id="wallet-address"></div>
-    <button id="pay" disabled>💸 Оплатить 0.5 TON</button>
+    <button id="pay" disabled>💸 Оплатить 0.1 TON</button>
   </div>
 
   <script>
@@ -119,14 +119,14 @@
         messages: [
           {
             address: "UQBfLcNf5TZZb6SEerk0Cr1V2AawL4glN0IG5DlO8mMyb7Uq",
-            amount: (0.5 * 1e9).toString(),
+            amount: (0.1 * 1e9).toString(),
           }
         ]
       };
 
       try {
         await tonConnect.sendTransaction(tx);
-        const newBalance = getDonatedBalance() + 0.5;
+        const newBalance = getDonatedBalance() + 0.1;
         setDonatedBalance(newBalance);
         updateBalanceView();
         tg.showAlert("✅ Оплата прошла успешно!");
