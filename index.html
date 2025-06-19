@@ -1,416 +1,255 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Combat Dark - Кликер</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
-
-  /* --- Сброс --- */
-  * {
-    box-sizing: border-box;
-    user-select: none;
-  }
-  body, html {
-    margin: 0; padding: 0;
-    height: 100%;
-    font-family: 'Orbitron', sans-serif;
-    background: #0c001d;
-    overflow: hidden;
-    color: #eee;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  /* --- Неоновый фон с партиклами --- */
-  body::before {
-    content: "";
-    position: fixed;
-    top:0; left:0; width:100%; height:100%;
-    background:
-      radial-gradient(circle at 20% 30%, #4b0082, transparent 60%),
-      radial-gradient(circle at 70% 70%, #8a2be2, transparent 70%);
-    animation: pulse 6s ease-in-out infinite alternate;
-    z-index: -2;
-  }
-
-  @keyframes pulse {
-    0% { filter: hue-rotate(0deg); }
-    100% { filter: hue-rotate(360deg);}
-  }
-
-  /* Партиклы */
-  #particles {
-    position: fixed;
-    top:0; left:0; width:100%; height:100%;
-    pointer-events: none;
-    z-index: -1;
-  }
-
-  /* --- Контейнер --- */
-  .container {
-    max-width: 480px;
-    margin: 1rem auto 0;
-    padding: 15px;
-    background: rgba(20, 5, 40, 0.7);
-    border-radius: 15px;
-    box-shadow: 0 0 15px #8a2be2cc;
-  }
-
-  h1 {
-    text-align: center;
-    font-weight: 900;
-    font-size: 2.8rem;
-    color: #b46aff;
-    margin-bottom: 10px;
-  }
-
-  #clicker-btn {
-    display: block;
-    width: 100%;
-    font-size: 3rem;
-    padding: 25px;
-    border: none;
-    border-radius: 20px;
-    background: #6a00ff;
-    color: white;
-    cursor: pointer;
-    transition: box-shadow 0.2s ease;
-    user-select: none;
-  }
-  #clicker-btn:active {
-    box-shadow: 0 0 25px 5px #e4a8ff inset;
-  }
-
-  .stats {
-    margin-top: 15px;
-    display: flex;
-    justify-content: space-around;
-    font-size: 1.3rem;
-  }
-
-  /* --- Магазин --- */
-  .shop {
-    margin-top: 20px;
-    background: #1f004d;
-    border-radius: 15px;
-    padding: 10px;
-  }
-
-  .shop h2 {
-    text-align: center;
-    color: #cc99ff;
-    margin-bottom: 10px;
-  }
-
-  .item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 7px 12px;
-    background: #2b0066;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    color: #ccc;
-  }
-  .item:hover {
-    background: #6600cc;
-    color: #fff;
-  }
-
-  .item.disabled {
-    cursor: default;
-    opacity: 0.5;
-  }
-
-  .item .price {
-    color: #d9b3ff;
-    font-weight: 700;
-  }
-
-  .item .color-preview {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    margin-right: 12px;
-    border: 2px solid #ccc;
-  }
-
-  /* --- Уведомление --- */
-  #notification {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(138, 43, 226, 0.9);
-    color: #fff;
-    padding: 6px 16px;
-    font-size: 0.85rem;
-    border-radius: 15px;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 100;
-    user-select: none;
-  }
-  #notification.show {
-    opacity: 1;
-  }
-
-  /* --- Нижний футер --- */
-  footer {
-    padding: 8px 10px;
-    background: #160034;
-    text-align: center;
-    font-size: 0.9rem;
-    color: #b497f6;
-    font-weight: 700;
-    user-select: none;
-  }
-
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Combat Dark</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Orbitron', sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      height: 100vh;
+      overflow: hidden;
+      color: white;
+    }
+    header {
+      padding: 1rem;
+      text-align: center;
+      font-size: 2rem;
+      color: #9b59b6;
+      text-shadow: 0 0 10px #8e44ad;
+    }
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 80vh;
+      position: relative;
+      z-index: 10;
+    }
+    .click-button {
+      padding: 3rem;
+      background: radial-gradient(circle at center, #8e44ad, #2c3e50);
+      border: none;
+      border-radius: 50%;
+      font-size: 2rem;
+      box-shadow: 0 0 20px #8e44ad;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .click-button:active {
+      transform: scale(0.95);
+      box-shadow: 0 0 30px #9b59b6;
+    }
+    .stats {
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .shop, .skins, .upgrades, .leaderboard, .inventory {
+      margin: 1rem auto;
+      max-width: 300px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 1rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+    .shop button, .skins button, .upgrades button {
+      width: 100%;
+      margin: 0.3rem 0;
+      padding: 0.5rem;
+      background: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .shop button:hover, .skins button:hover, .upgrades button:hover {
+      background: #8e44ad;
+    }
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .tabs button {
+      background: transparent;
+      border: 1px solid #8e44ad;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 1rem;
+      cursor: pointer;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+  </style>
 </head>
 <body>
+  <canvas id="particles"></canvas>
+  <header>Combat Dark</header>
 
-<div id="particles"></div>
-
-<div class="container">
-  <h1>Combat Dark</h1>
-
-  <button id="clicker-btn" title="Кликни меня!">Кликни!</button>
-
-  <div class="stats">
-    <div>Клики: <span id="clicks">0</span></div>
-    <div>Монеты: <span id="coins">0</span></div>
+  <div class="tabs">
+    <button onclick="showTab('clicker')">Кликер</button>
+    <button onclick="showTab('shop')">Магазин</button>
+    <button onclick="showTab('skins')">Скины</button>
+    <button onclick="showTab('leaderboard')">Лидеры</button>
+    <button onclick="showTab('inventory')">Профиль</button>
   </div>
 
-  <div class="shop">
-    <h2>Магазин улучшений</h2>
-    <div class="item" id="click-upgrade">
-      <div>Улучшить клик (+1)</div>
-      <div class="price" id="click-upgrade-price">20</div>
+  <div class="game-container">
+    <div id="clicker">
+      <button class="click-button" onclick="clickHandler()">Клик!</button>
+      <div class="stats">
+        <p>Клики: <span id="clicks">0</span></p>
+        <p>Монеты: <span id="coins">0</span></p>
+      </div>
     </div>
-    <div class="item" id="auto-upgrade">
-      <div>Улучшить автокликер (+1 клик/сек)</div>
-      <div class="price" id="auto-upgrade-price">50</div>
+
+    <div class="shop" id="shop" style="display: none">
+      <h3>Улучшения</h3>
+      <button onclick="buyUpgrade('clickPower')">+1 клик (цена: <span id="clickPowerCost">10</span>)</button>
+      <button onclick="buyUpgrade('autoClicker')">Автокликер (цена: <span id="autoClickerCost">50</span>)</button>
+    </div>
+
+    <div class="skins" id="skins" style="display: none">
+      <h3>Скины</h3>
+      <button onclick="buySkin('neon')">Неон (100)</button>
+    </div>
+
+    <div class="leaderboard" id="leaderboard" style="display: none">
+      <h3>Топ игроков</h3>
+      <div id="leaderboardList">@dark — 10000 кликов</div>
+    </div>
+
+    <div class="inventory" id="inventory" style="display: none">
+      <h3>Профиль</h3>
+      <p>Имя: <span id="tgName">@username</span></p>
+      <p>ID: <span id="tgID">123456789</span></p>
     </div>
   </div>
 
-  <div class="shop" style="margin-top: 15px;">
-    <h2>Магазин цветов клика</h2>
-    <div id="colors-shop"></div>
-  </div>
-</div>
+  <footer>С любовью Dark 2025 ©</footer>
 
-<div id="notification"></div>
-
-<footer>С любовью Dark 2025 ©</footer>
-
-<script>
-  // Начальные данные
-  const colors = [
-    { id: 1, name: "Фиолетовый", color: "#9b59b6", price: 0 },
-    { id: 2, name: "Неоновый синий", color: "#00ffff", price: 100 },
-    { id: 3, name: "Розовый неон", color: "#ff00ff", price: 150 },
-  ];
-
-  let profile = {
-    clicks: 0,
-    coins: 0,
-    clickPower: 1,
-    autoClickPower: 0,
-    ownedColors: [1], // всегда есть фиолетовый
-    activeColor: 1,
-  };
-
-  // Загрузка профиля из localStorage
-  function loadProfile() {
-    const saved = localStorage.getItem("clicker-profile");
-    if (saved) {
-      profile = JSON.parse(saved);
+  <script>
+    // Показ вкладок
+    function showTab(tab) {
+      ['clicker', 'shop', 'skins', 'leaderboard', 'inventory'].forEach(id => {
+        document.getElementById(id).style.display = id === tab ? 'block' : 'none';
+      });
     }
-  }
-  // Сохранение профиля
-  function saveProfile() {
-    localStorage.setItem("clicker-profile", JSON.stringify(profile));
-  }
 
-  // Обновление отображения
-  function updateUI() {
-    document.getElementById("clicks").textContent = profile.clicks;
-    document.getElementById("coins").textContent = profile.coins;
-    document.getElementById("clicker-btn").style.backgroundColor = colors.find(c => c.id === profile.activeColor).color;
+    let clicks = 0;
+    let coins = 0;
+    let clickPower = 1;
+    let autoClicker = 0;
+    let autoClickInterval = null;
 
-    document.getElementById("click-upgrade-price").textContent = 20 + profile.clickPower * 15;
-    document.getElementById("auto-upgrade-price").textContent = 50 + profile.autoClickPower * 30;
+    function updateUI() {
+      document.getElementById('clicks').textContent = clicks;
+      document.getElementById('coins').textContent = coins;
+      document.getElementById('clickPowerCost').textContent = 10 + clickPower * 5;
+      document.getElementById('autoClickerCost').textContent = 50 + autoClicker * 20;
+    }
 
-    // Обновить магазин цветов
-    const colorsShop = document.getElementById("colors-shop");
-    colorsShop.innerHTML = "";
-    colors.forEach(c => {
-      const owned = profile.ownedColors.includes(c.id);
-      const colorItem = document.createElement("div");
-      colorItem.classList.add("item");
-      if (!owned && profile.coins < c.price) colorItem.classList.add("disabled");
+    function clickHandler() {
+      clicks += clickPower;
+      coins += clickPower;
+      updateUI();
+    }
 
-      colorItem.innerHTML = `
-        <div style="display:flex; align-items:center;">
-          <div class="color-preview" style="background:${c.color}"></div>
-          <div>${c.name}${owned ? " (куплено)" : ""}</div>
-        </div>
-        <div>${owned ? "Активен" : c.price + " монет"}</div>
-      `;
-      colorItem.onclick = () => {
-        if (owned) {
-          profile.activeColor = c.id;
-          showNotification("Цвет активирован!");
-          updateUI();
-          saveProfile();
-          return;
+    function buyUpgrade(type) {
+      if (type === 'clickPower') {
+        const cost = 10 + clickPower * 5;
+        if (coins >= cost) {
+          coins -= cost;
+          clickPower++;
         }
-        if (profile.coins >= c.price) {
-          profile.coins -= c.price;
-          profile.ownedColors.push(c.id);
-          profile.activeColor = c.id;
-          showNotification(`Цвет ${c.name} куплен и активирован!`);
-          updateUI();
-          saveProfile();
-        } else {
-          showNotification("Недостаточно монет для покупки цвета.");
+      }
+      if (type === 'autoClicker') {
+        const cost = 50 + autoClicker * 20;
+        if (coins >= cost) {
+          coins -= cost;
+          autoClicker++;
+          if (!autoClickInterval) {
+            autoClickInterval = setInterval(() => {
+              clicks += autoClicker;
+              coins += autoClicker;
+              updateUI();
+            }, 1000);
+          }
         }
-      };
-      colorsShop.appendChild(colorItem);
-    });
-  }
+      }
+      updateUI();
+    }
 
-  // Клик по кнопке
-  document.getElementById("clicker-btn").onclick = () => {
-    profile.clicks += profile.clickPower;
-    profile.coins += profile.clickPower;
+    // Телеграм WebApp init
+    if (window.Telegram.WebApp) {
+      Telegram.WebApp.ready();
+      Telegram.WebApp.expand();
+      const initDataUnsafe = Telegram.WebApp.initDataUnsafe;
+      if (initDataUnsafe.user) {
+        document.getElementById('tgName').textContent = `@${initDataUnsafe.user.username}`;
+        document.getElementById('tgID').textContent = initDataUnsafe.user.id;
+      }
+    }
+
+    // Партиклы
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const particles = Array.from({ length: 80 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 2 + 1,
+      speedX: (Math.random() - 0.5) * 1.5,
+      speedY: (Math.random() - 0.5) * 1.5,
+      alpha: Math.random() * 0.5 + 0.3
+    }));
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let p of particles) {
+        p.x += p.speedX;
+        p.y += p.speedY;
+
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(155, 89, 182, ${p.alpha})`;
+        ctx.fill();
+      }
+      requestAnimationFrame(drawParticles);
+    }
+
+    drawParticles();
     updateUI();
-    saveProfile();
-  };
-
-  // Покупка улучшения клика
-  document.getElementById("click-upgrade").onclick = () => {
-    const cost = 20 + profile.clickPower * 15;
-    if (profile.coins >= cost) {
-      profile.coins -= cost;
-      profile.clickPower++;
-      showNotification("Клик улучшен! +1 к силе клика");
-      updateUI();
-      saveProfile();
-    } else {
-      showNotification("Недостаточно монет");
-    }
-  };
-
-  // Покупка улучшения автокликера
-  document.getElementById("auto-upgrade").onclick = () => {
-    const cost = 50 + profile.autoClickPower * 30;
-    if (profile.coins >= cost) {
-      profile.coins -= cost;
-      profile.autoClickPower++;
-      showNotification("Автокликер улучшен! +1 к авто клику");
-      updateUI();
-      saveProfile();
-    } else {
-      showNotification("Недостаточно монет");
-    }
-  };
-
-  // Автокликер (1 раз в секунду)
-  setInterval(() => {
-    if (profile.autoClickPower > 0) {
-      profile.clicks += profile.autoClickPower;
-      profile.coins += profile.autoClickPower;
-      updateUI();
-      saveProfile();
-    }
-  }, 1000);
-
-  // Уведомления по центру
-  const notif = document.getElementById("notification");
-  let notifTimeout;
-  function showNotification(text) {
-    clearTimeout(notifTimeout);
-    notif.textContent = text;
-    notif.classList.add("show");
-    notifTimeout = setTimeout(() => {
-      notif.classList.remove("show");
-    }, 2000);
-  }
-
-  // Партиклы на фоне
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  const particlesContainer = document.getElementById("particles");
-  particlesContainer.appendChild(canvas);
-
-  let w, h;
-  function resize() {
-    w = window.innerWidth;
-    h = window.innerHeight;
-    canvas.width = w;
-    canvas.height = h;
-  }
-  window.addEventListener("resize", resize);
-  resize();
-
-  const particlesCount = 70;
-  const particles = [];
-  for(let i = 0; i < particlesCount; i++) {
-    particles.push({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      size: Math.random() * 3 + 1,
-      speedX: (Math.random() - 0.5) * 0.4,
-      speedY: (Math.random() - 0.5) * 0.4,
-      alpha: Math.random() * 0.6 + 0.3
-    });
-  }
-
-  function draw() {
-    ctx.clearRect(0,0,w,h);
-    particles.forEach(p => {
-      p.x += p.speedX;
-      p.y += p.speedY;
-      if(p.x < 0) p.x = w;
-      if(p.x > w) p.x = 0;
-      if(p.y < 0) p.y = h;
-      if(p.y > h) p.y = 0;
-
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(155, 89, 182, ${p.alpha})`; // неоновый фиолетовый
-      ctx.shadowColor = '#b46aff';
-      ctx.shadowBlur = 6;
-      ctx.fill
-      if(p.y < 0) p.y = h;
-      if(p.y > h) p.y = 0;
-
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(138,43,226,${p.alpha})`; // фиолетовый цвет с прозрачностью
-      ctx.shadowColor = '#9b59b6';
-      ctx.shadowBlur = 10;
-      ctx.fill();
-      ctx.closePath();
-    });
-
-    requestAnimationFrame(draw);
-  }
-
-  draw();
-
-  // Загрузить профиль при старте и обновить UI
-  loadProfile();
-  updateUI();
-</script>
-
+  </script>
 </body>
 </html>
