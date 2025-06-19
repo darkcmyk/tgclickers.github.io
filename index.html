@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>TON Казино с реальной оплатой</title>
+<title>TON Казино с оплатой</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -139,7 +139,9 @@
 
 <div id="toast-container"></div>
 
+<!-- Правильное подключение TON Connect SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk/dist/tonconnect.umd.min.js"></script>
+
 <script>
   function showToast(message, type = 'success', duration = 4000) {
     const container = document.getElementById('toast-container');
@@ -153,6 +155,7 @@
     }, duration);
   }
 
+  // Инициализация TON Connect
   const tonConnect = new TonConnect.TonConnect({
     manifestUrl: 'https://darkcmyk.github.io/tgclickers.github.io/tonconnect-manifest.json'
   });
@@ -199,7 +202,6 @@
     }
   };
 
-  // Отправить транзакцию с TON
   async function sendTon(amountTon) {
     if(!connectedWallet) {
       showToast('Подключите кошелек', 'error');
@@ -225,7 +227,6 @@
 
   // Игры:
 
-  // Монетка 0.05 TON, выигрыш x2
   document.getElementById('coin-flip-btn').onclick = async () => {
     const stake = 0.05;
     const balance = await updateBalance();
@@ -238,11 +239,10 @@
 
     const side = Math.random() < 0.5 ? 'Орёл' : 'Решка';
     const win = Math.random() < 0.5;
-    const resultText = `Выпало: ${side}. ` + (win ? `Вы выиграли ${(stake*2).toFixed(2)} TON! (Выплаты пока вручную)` : `Вы проиграли.`);
+    const resultText = `Выпало: ${side}. ` + (win ? `Вы выиграли ${(stake*2).toFixed(2)} TON! (Выплаты вручную)` : `Вы проиграли.`);
     document.getElementById('coin-flip-result').textContent = resultText;
   };
 
-  // Слоты 0.1 TON, выигрыш x5
   document.getElementById('slots-btn').onclick = async () => {
     const stake = 0.1;
     const balance = await updateBalance();
@@ -267,7 +267,6 @@
     }
   };
 
-  // Рулетка 0.1 TON, выигрыш x9
   document.getElementById('roulette-btn').onclick = async () => {
     const stake = 0.1;
     const balance = await updateBalance();
@@ -293,7 +292,6 @@
     }
   };
 
-  // Кости 0.1 TON, выигрыш если сумма кубиков >= 7 — ставка x2
   document.getElementById('dice-btn').onclick = async () => {
     const stake = 0.1;
     const balance = await updateBalance();
