@@ -1,139 +1,447 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TON Оплата</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      background-color: var(--tg-theme-bg-color, #ffffff);
-      color: var(--tg-theme-text-color, #000000);
-      padding: 20px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-
-    h2 {
-      margin-bottom: 0.5em;
-    }
-
-    .balance {
-      font-size: 16px;
-      margin-bottom: 1em;
-      color: green;
-    }
-
-    button {
-      font-size: 1rem;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 10px;
-      background-color: #0098ea;
-      color: white;
-      margin-top: 20px;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      background-color: #888;
-    }
-
-    #wallet-address {
-      margin-top: 10px;
-      font-size: 14px;
-    }
-
-    #connect-container {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-
-    .content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Telegram TON Казино</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #121212;
+    color: #eee;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+  header {
+    padding: 10px 0;
+    width: 100%;
+    background: #1f1f1f;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #3affb2;
+    user-select: none;
+  }
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 480px;
+    padding: 10px 20px;
+    box-sizing: border-box;
+  }
+  .balance {
+    font-size: 20px;
+    margin: 10px 0 20px 0;
+    text-align: center;
+  }
+  button {
+    cursor: pointer;
+    background: #3affb2;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-weight: 700;
+    font-size: 16px;
+    color: #000;
+    margin: 5px 5px 15px 5px;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #36d59b;
+  }
+  select, input[type=number] {
+    font-size: 16px;
+    padding: 6px;
+    margin-left: 10px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+  }
+  label {
+    user-select: none;
+  }
+  .game-container {
+    background: #222;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  h2 {
+    margin-top: 0;
+    color: #3affb2;
+  }
+  #history {
+    max-height: 200px;
+    overflow-y: auto;
+    background: #1b1b1b;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 14px;
+    color: #ccc;
+  }
+  #history .win {
+    color: #4ade80;
+  }
+  #history .lose {
+    color: #f87171;
+  }
+  #admin-button {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ff6347;
+    color: #fff;
+    font-weight: 700;
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: none;
+    z-index: 9999;
+    display: none;
+  }
+  #admin-panel {
+    position: fixed;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #222;
+    padding: 20px;
+    border-radius: 12px;
+    color: #eee;
+    max-width: 480px;
+    width: 90%;
+    z-index: 9999;
+    display: none;
+  }
+  #admin-panel h3 {
+    margin-top: 0;
+    color: #ff6347;
+  }
+  #games-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    background: #333;
+    color: #eee;
+    margin: 0 5px 10px 5px;
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-weight: 600;
+    user-select: none;
+    border: none;
+  }
+  .tab-btn.active {
+    background: #3affb2;
+    color: #000;
+  }
+  .game-content {
+    background: #111;
+    border-radius: 10px;
+    padding: 15px;
+  }
+  .slot-symbols {
+    font-size: 48px;
+    text-align: center;
+    margin: 10px 0;
+  }
+  .wheel-sectors {
+    display: flex;
+    justify-content: space-around;
+    margin: 15px 0;
+  }
+  .sector {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #3affb2;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    user-select: none;
+  }
+</style>
 </head>
 <body>
 
-  <div id="connect-container">
-    <div id="connect-button"></div>
+<header>🎰 TON Казино (Тестовая версия)</header>
+
+<button id="admin-button">🛠 Админ панель</button>
+
+<div id="admin-panel">
+  <h3>Админ панель</h3>
+  <button id="admin-add-balance">➕ Выдать 5 TON на баланс (фейк)</button>
+  <p>Текущий баланс: <span id="admin-balance-display"></span> TON</p>
+  <button id="admin-clear-history">🗑 Очистить историю игр</button>
+</div>
+
+<main>
+  <div class="balance">Баланс: <span id="balance">0.0</span> TON</div>
+
+  <div id="games-tabs">
+    <button class="tab-btn active" data-game="coin">Монетка</button>
+    <button class="tab-btn" data-game="slots">Слоты</button>
+    <button class="tab-btn" data-game="roulette">Рулетка</button>
+    <button class="tab-btn" data-game="dice">Кубик</button>
+    <button class="tab-btn" data-game="wheel">Колесо фортуны</button>
   </div>
 
-  <div class="content">
-    <h2>Оплата 0.1 TON</h2>
-    <div class="balance" id="donated-balance">Вы задонатили: 0 TON</div>
-    <div id="wallet-address"></div>
-    <button id="pay" disabled>💸 Оплатить 0.1 TON</button>
+  <div id="game-coin" class="game-content">
+    <h2>Монетка</h2>
+    <label>Ставка: <input type="number" id="coin-bet" value="0.1" step="0.1" min="0.1" max="100" /></label><br/><br/>
+    <label>Выберите: 
+      <select id="coin-choice">
+        <option value="heads">Орёл</option>
+        <option value="tails">Решка</option>
+      </select>
+    </label><br/><br/>
+    <button id="coin-play">Играть</button>
   </div>
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+  <div id="game-slots" class="game-content" style="display:none;">
+    <h2>Слоты</h2>
+    <label>Ставка: <input type="number" id="slots-bet" value="0.1" step="0.1" min="0.1" max="100" /></label><br/><br/>
+    <div class="slot-symbols" id="slots-result">🍒 🍋 🍉</div>
+    <button id="slots-play">Играть</button>
+  </div>
 
-    const connectButtonId = 'connect-button';
-    const payButton = document.getElementById("pay");
-    const walletDiv = document.getElementById("wallet-address");
-    const balanceDiv = document.getElementById("donated-balance");
+  <div id="game-roulette" class="game-content" style="display:none;">
+    <h2>Рулетка</h2>
+    <label>Ставка: <input type="number" id="roulette-bet" value="0.1" step="0.1" min="0.1" max="100" /></label><br/><br/>
+    <label>Число (1-12): <input type="number" id="roulette-choice" value="1" min="1" max="12" /></label><br/><br/>
+    <button id="roulette-play">Играть</button>
+  </div>
 
-    const tonConnect = new TON_CONNECT_UI.TonConnectUI({
-      manifestUrl: 'https://darkcmyk.github.io/tgclickers.github.io/tonconnect-manifest.json',
-      buttonRootId: connectButtonId
+  <div id="game-dice" class="game-content" style="display:none;">
+    <h2>Кубик</h2>
+    <label>Ставка: <input type="number" id="dice-bet" value="0.1" step="0.1" min="0.1" max="100" /></label><br/><br/>
+    <label>Число (1-6): <input type="number" id="dice-choice" value="1" min="1" max="6" /></label><br/><br/>
+    <button id="dice-play">Играть</button>
+  </div>
+
+  <div id="game-wheel" class="game-content" style="display:none;">
+    <h2>Колесо фортуны</h2>
+    <label>Ставка: <input type="number" id="wheel-bet" value="0.1" step="0.1" min="0.1" max="100" /></label><br/><br/>
+    <div class="wheel-sectors">
+      <div class="sector">×0</div>
+      <div class="sector">×1</div>
+      <div class="sector">×2</div>
+      <div class="sector">×3</div>
+      <div class="sector">×5</div>
+      <div class="sector">×10</div>
+    </div><br/>
+    <button id="wheel-play">Крутить</button>
+    <div id="wheel-result" style="margin-top:10px; font-size:18px;"></div>
+  </div>
+
+  <h2>История игр</h2>
+  <div id="history"></div>
+</main>
+
+<script>
+  const ownerId = 8026008937; // Твой Telegram ID
+
+  // Проверяем пользователя и показываем админку
+  const user = window.Telegram?.WebApp?.initDataUnsafe?.user || {};
+  if(user.id === ownerId){
+    document.getElementById("admin-button").style.display = "block";
+  }
+
+  // Переключение табов
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const game = btn.dataset.game;
+      document.querySelectorAll(".game-content").forEach(c => c.style.display = "none");
+      document.getElementById("game-" + game).style.display = "block";
+    };
+  });
+
+  // Баланс и история в localStorage
+  function getBalance() {
+    return parseFloat(localStorage.getItem("casino-balance") || "0");
+  }
+  function setBalance(value) {
+    localStorage.setItem("casino-balance", value.toFixed(4));
+  }
+  function updateBalanceView() {
+    document.getElementById("balance").textContent = getBalance().toFixed(4);
+    if(user.id === ownerId){
+      document.getElementById("admin-balance-display").textContent = getBalance().toFixed(4);
+    }
+  }
+
+  function getHistory() {
+    return JSON.parse(localStorage.getItem("casino-history") || "[]");
+  }
+  function addHistory(record) {
+    const history = getHistory();
+    history.unshift(record);
+    if(history.length > 50) history.pop();
+    localStorage.setItem("casino-history", JSON.stringify(history));
+  }
+  function updateHistoryView() {
+    const historyEl = document.getElementById("history");
+    const history = getHistory();
+    if(history.length === 0) {
+      historyEl.textContent = "История пуста";
+      return;
+    }
+    historyEl.innerHTML = "";
+    history.forEach(h => {
+      const div = document.createElement("div");
+      div.className = h.win ? "win" : "lose";
+      div.textContent = `[${new Date(h.date).toLocaleTimeString()}] ${h.game} — ставка ${h.bet} TON → ${h.win ? "Выигрыш " + h.win + " TON" : "Проигрыш"}`;
+      historyEl.appendChild(div);
     });
+  }
 
-    function getDonatedBalance() {
-      return parseFloat(localStorage.getItem("donated_ton") || "0");
+  // Админ панель
+  document.getElementById("admin-button").onclick = () => {
+    const panel = document.getElementById("admin-panel");
+    panel.style.display = panel.style.display === "none" ? "block" : "none";
+  };
+
+  document.getElementById("admin-add-balance").onclick = () => {
+    let bal = getBalance();
+    bal += 5;
+    setBalance(bal);
+    updateBalanceView();
+    alert("Добавлено 5 TON на тестовый баланс.");
+  };
+
+  document.getElementById("admin-clear-history").onclick = () => {
+    localStorage.removeItem("casino-history");
+    updateHistoryView();
+  };
+
+  // Игровые функции
+
+  // Вспомогательная проверка ставки
+  function validBet(bet) {
+    if(isNaN(bet)) return false;
+    if(bet < 0.1) return false;
+    if(bet > getBalance()) return false;
+    return true;
+  }
+
+  function playGame(bet, gameName, callback){
+    if(!validBet(bet)){
+      alert("Неверная ставка или недостаточно баланса.");
+      return;
     }
-
-    function setDonatedBalance(value) {
-      localStorage.setItem("donated_ton", value.toString());
-    }
-
-    function updateBalanceView() {
-      balanceDiv.innerText = `Вы задонатили: ${getDonatedBalance().toFixed(2)} TON`;
-    }
-
+    let balance = getBalance();
+    balance -= bet;
+    setBalance(balance);
     updateBalanceView();
 
-    tonConnect.onStatusChange(wallet => {
-      if (wallet) {
-        walletDiv.innerText = "Кошелек: " + wallet.account.address;
-        payButton.disabled = false;
-      } else {
-        walletDiv.innerText = "";
-        payButton.disabled = true;
-      }
-    });
-
-    payButton.onclick = async () => {
-      const tx = {
-        validUntil: Math.floor(Date.now() / 1000) + 600,
-        messages: [
-          {
-            address: "UQBfLcNf5TZZb6SEerk0Cr1V2AawL4glN0IG5DlO8mMyb7Uq",
-            amount: (0.1 * 1e9).toString(),
-          }
-        ]
-      };
-
-      try {
-        await tonConnect.sendTransaction(tx);
-        const newBalance = getDonatedBalance() + 0.1;
-        setDonatedBalance(newBalance);
+    setTimeout(() => {
+      const result = callback();
+      // result = {win: 0/amount, msg: string}
+      if(result.win > 0){
+        balance += result.win;
+        setBalance(balance);
         updateBalanceView();
-        tg.showAlert("✅ Оплата прошла успешно!");
-      } catch (err) {
-        tg.showAlert("❌ Ошибка оплаты: " + err.message);
       }
-    };
-  </script>
+      addHistory({
+        date: Date.now(),
+        game: gameName,
+        bet: bet,
+        win: result.win,
+        msg: result.msg
+      });
+      updateHistoryView();
+      alert(result.msg);
+    }, 300);
+  }
+
+  // Монетка
+  document.getElementById("coin-play").onclick = () => {
+    const bet = parseFloat(document.getElementById("coin-bet").value);
+    const choice = document.getElementById("coin-choice").value;
+    playGame(bet, "Монетка", () => {
+      const toss = Math.random() < 0.5 ? "heads" : "tails";
+      if(choice === toss) return {win: bet * 2, msg: `Вы выиграли! Выпал ${toss === "heads" ? "Орёл" : "Решка"}`};
+      else return {win: 0, msg: `Вы проиграли. Выпал ${toss === "heads" ? "Орёл" : "Решка"}`};
+    });
+  };
+
+  // Слоты
+  const slotSymbols = ["🍒","🍋","🍉","🍇","⭐","🍀"];
+  function getRandomSlot() {
+    return slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+  }
+  document.getElementById("slots-play").onclick = () => {
+    const bet = parseFloat(document.getElementById("slots-bet").value);
+    playGame(bet, "Слоты", () => {
+      const s1 = getRandomSlot();
+      const s2 = getRandomSlot();
+      const s3 = getRandomSlot();
+      document.getElementById("slots-result").textContent = `${s1} ${s2} ${s3}`;
+      let win = 0;
+      if(s1 === s2 && s2 === s3) win = bet * 5;
+      else if(s1 === s2 || s2 === s3 || s1 === s3) win = bet * 2;
+      if(win > 0) return {win, msg: `Вы выиграли ${win.toFixed(2)} TON!`};
+      else return {win: 0, msg: "Вы проиграли."};
+    });
+  };
+
+  // Рулетка
+  document.getElementById("roulette-play").onclick = () => {
+    const bet = parseFloat(document.getElementById("roulette-bet").value);
+    const choice = parseInt(document.getElementById("roulette-choice").value);
+    if(choice < 1 || choice > 12){
+      alert("Число должно быть от 1 до 12");
+      return;
+    }
+    playGame(bet, "Рулетка", () => {
+      const resultNumber = Math.floor(Math.random() * 12) + 1;
+      if(choice === resultNumber) return {win: bet * 12, msg: `Выпало число ${resultNumber}. Вы выиграли ${ (bet*12).toFixed(2)} TON!`};
+      else return {win: 0, msg: `Выпало число ${resultNumber}. Вы проиграли.`};
+    });
+  };
+
+  // Кубик
+  document.getElementById("dice-play").onclick = () => {
+    const bet = parseFloat(document.getElementById("dice-bet").value);
+    const choice = parseInt(document.getElementById("dice-choice").value);
+    if(choice < 1 || choice > 6){
+      alert("Число должно быть от 1 до 6");
+      return;
+    }
+    playGame(bet, "Кубик", () => {
+      const resultNumber = Math.floor(Math.random() * 6) + 1;
+      if(choice === resultNumber) return {win: bet * 6, msg: `Выпало число ${resultNumber}. Вы выиграли ${(bet*6).toFixed(2)} TON!`};
+      else return {win: 0, msg: `Выпало число ${resultNumber}. Вы проиграли.`};
+    });
+  };
+
+  // Колесо фортуны
+  const wheelMultipliers = [0,1,2,3,5,10];
+  document.getElementById("wheel-play").onclick = () => {
+    const bet = parseFloat(document.getElementById("wheel-bet").value);
+    playGame(bet, "Колесо фортуны", () => {
+      const idx = Math.floor(Math.random() * wheelMultipliers.length);
+      const mult = wheelMultipliers[idx];
+      document.getElementById("wheel-result").textContent = `Выпало ×${mult}`;
+      if(mult === 0) return {win: 0, msg: "Упс! Вы проиграли."};
+      else return {win: bet * mult, msg: `Поздравляем! Вы выиграли ${(bet*mult).toFixed(2)} TON.`};
+    });
+  };
+
+  // Инициализация
+  updateBalanceView();
+  updateHistoryView();
+
+</script>
+
 </body>
 </html>
