@@ -2,254 +2,89 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Combat Dark</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pay with TON</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Orbitron', sans-serif;
-    }
     body {
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-      height: 100vh;
-      overflow: hidden;
-      color: white;
+      margin:0; padding:0;
+      background:radial-gradient(circle at center, #1a001f, #000);
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      height:100vh;
+      text-align:center;
     }
-    header {
-      padding: 1rem;
-      text-align: center;
-      font-size: 2rem;
-      color: #9b59b6;
-      text-shadow: 0 0 10px #8e44ad;
+    h1 { font-size:2.5rem; margin-bottom:20px; }
+    button {
+      padding:15px 30px;
+      font-size:1.2rem;
+      margin:10px;
+      border:none;
+      border-radius:10px;
+      background:linear-gradient(45deg,#8a2be2,#4b0082);
+      cursor:pointer;
+      color:#fff;
+      box-shadow:0 0 20px #8a2be2;
+      transition:all .3s ease;
     }
-    .game-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 80vh;
-      position: relative;
-      z-index: 10;
-    }
-    .click-button {
-      padding: 3rem;
-      background: radial-gradient(circle at center, #8e44ad, #2c3e50);
-      border: none;
-      border-radius: 50%;
-      font-size: 2rem;
-      box-shadow: 0 0 20px #8e44ad;
-      color: white;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .click-button:active {
-      transform: scale(0.95);
-      box-shadow: 0 0 30px #9b59b6;
-    }
-    .stats {
-      margin-top: 2rem;
-      text-align: center;
-    }
-    .shop, .skins, .upgrades, .leaderboard, .inventory {
-      margin: 1rem auto;
-      max-width: 300px;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 1rem;
-      border-radius: 1rem;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-    }
-    .shop button, .skins button, .upgrades button {
-      width: 100%;
-      margin: 0.3rem 0;
-      padding: 0.5rem;
-      background: #2c3e50;
-      color: white;
-      border: none;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .shop button:hover, .skins button:hover, .upgrades button:hover {
-      background: #8e44ad;
-    }
-    footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.9rem;
-      color: #ccc;
-    }
-    .tabs {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-    .tabs button {
-      background: transparent;
-      border: 1px solid #8e44ad;
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 1rem;
-      cursor: pointer;
-    }
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 0;
+    button:hover { transform:scale(1.05); box-shadow:0 0 40px #b23cff; }
+    #footer {
+      position:absolute; bottom:10px;
+      color:#aaa; font-size:.9rem;
     }
   </style>
 </head>
 <body>
-  <canvas id="particles"></canvas>
-  <header>Combat Dark</header>
 
-  <div class="tabs">
-    <button onclick="showTab('clicker')">Кликер</button>
-    <button onclick="showTab('shop')">Магазин</button>
-    <button onclick="showTab('skins')">Скины</button>
-    <button onclick="showTab('leaderboard')">Лидеры</button>
-    <button onclick="showTab('inventory')">Профиль</button>
-  </div>
+<h1>Оплатить 1 TON</h1>
+<button id="connectBtn">Подключить TON‑кошелёк</button><br/>
+<button id="payBtn" disabled>Оплатить 1 TON</button>
 
-  <div class="game-container">
-    <div id="clicker">
-      <button class="click-button" onclick="clickHandler()">Клик!</button>
-      <div class="stats">
-        <p>Клики: <span id="clicks">0</span></p>
-        <p>Монеты: <span id="coins">0</span></p>
-      </div>
-    </div>
+<div id="footer">С любовью Dark 2025 ©</div>
 
-    <div class="shop" id="shop" style="display: none">
-      <h3>Улучшения</h3>
-      <button onclick="buyUpgrade('clickPower')">+1 клик (цена: <span id="clickPowerCost">10</span>)</button>
-      <button onclick="buyUpgrade('autoClicker')">Автокликер (цена: <span id="autoClickerCost">50</span>)</button>
-    </div>
+<script src="https://unpkg.com/@tonconnect/ui/dist/tonconnect-ui/index.umd.js"></script>
+<script>
+  const { TonConnectUI } = window;
 
-    <div class="skins" id="skins" style="display: none">
-      <h3>Скины</h3>
-      <button onclick="buySkin('neon')">Неон (100)</button>
-    </div>
+  const tonConnect = new TonConnectUI({
+    manifestUrl: location.origin + '/tonconnect-manifest.json',
+  });
 
-    <div class="leaderboard" id="leaderboard" style="display: none">
-      <h3>Топ игроков</h3>
-      <div id="leaderboardList">@dark — 10000 кликов</div>
-    </div>
+  const connectBtn = document.getElementById('connectBtn');
+  const payBtn = document.getElementById('payBtn');
 
-    <div class="inventory" id="inventory" style="display: none">
-      <h3>Профиль</h3>
-      <p>Имя: <span id="tgName">@username</span></p>
-      <p>ID: <span id="tgID">123456789</span></p>
-    </div>
-  </div>
+  let wallet;
 
-  <footer>С любовью Dark 2025 ©</footer>
+  connectBtn.onclick = async () => {
+    try {
+      wallet = await tonConnect.connect();
+      alert(`🚀 Подключено к кошельку ${wallet.account.address}`);
+      connectBtn.textContent = 'Кошелёк подключён';
+      payBtn.disabled = false;
+    } catch (err) {
+      alert('Ошибка подключения: '+err);
+    }
+  };
 
-  <script>
-    // Показ вкладок
-    function showTab(tab) {
-      ['clicker', 'shop', 'skins', 'leaderboard', 'inventory'].forEach(id => {
-        document.getElementById(id).style.display = id === tab ? 'block' : 'none';
+  payBtn.onclick = async () => {
+    const params = {
+      to: 'UQBfLcNf5TZZb6SEerk0Cr1V2AawL4glN0IG5DlO8mMyb7Uq',
+      amount: '1000000000',
+      text: 'Оплата 1 TON — Dark Shop'
+    };
+
+    try {
+      const result = await tonConnect.sendTransaction({
+        validUntil: Math.floor(Date.now()/1000) + 60,
+        messages: [params]
       });
+      alert('✅ Оплата прошла успешно! Hash: ' + result.inMessageHash);
+    } catch (err) {
+      alert('❌ Оплата не завершена: ' + err);
     }
+  };
+</script>
 
-    let clicks = 0;
-    let coins = 0;
-    let clickPower = 1;
-    let autoClicker = 0;
-    let autoClickInterval = null;
-
-    function updateUI() {
-      document.getElementById('clicks').textContent = clicks;
-      document.getElementById('coins').textContent = coins;
-      document.getElementById('clickPowerCost').textContent = 10 + clickPower * 5;
-      document.getElementById('autoClickerCost').textContent = 50 + autoClicker * 20;
-    }
-
-    function clickHandler() {
-      clicks += clickPower;
-      coins += clickPower;
-      updateUI();
-    }
-
-    function buyUpgrade(type) {
-      if (type === 'clickPower') {
-        const cost = 10 + clickPower * 5;
-        if (coins >= cost) {
-          coins -= cost;
-          clickPower++;
-        }
-      }
-      if (type === 'autoClicker') {
-        const cost = 50 + autoClicker * 20;
-        if (coins >= cost) {
-          coins -= cost;
-          autoClicker++;
-          if (!autoClickInterval) {
-            autoClickInterval = setInterval(() => {
-              clicks += autoClicker;
-              coins += autoClicker;
-              updateUI();
-            }, 1000);
-          }
-        }
-      }
-      updateUI();
-    }
-
-    // Телеграм WebApp init
-    if (window.Telegram.WebApp) {
-      Telegram.WebApp.ready();
-      Telegram.WebApp.expand();
-      const initDataUnsafe = Telegram.WebApp.initDataUnsafe;
-      if (initDataUnsafe.user) {
-        document.getElementById('tgName').textContent = `@${initDataUnsafe.user.username}`;
-        document.getElementById('tgID').textContent = initDataUnsafe.user.id;
-      }
-    }
-
-    // Партиклы
-    const canvas = document.getElementById('particles');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const particles = Array.from({ length: 80 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      size: Math.random() * 2 + 1,
-      speedX: (Math.random() - 0.5) * 1.5,
-      speedY: (Math.random() - 0.5) * 1.5,
-      alpha: Math.random() * 0.5 + 0.3
-    }));
-
-    function drawParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let p of particles) {
-        p.x += p.speedX;
-        p.y += p.speedY;
-
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(155, 89, 182, ${p.alpha})`;
-        ctx.fill();
-      }
-      requestAnimationFrame(drawParticles);
-    }
-
-    drawParticles();
-    updateUI();
-  </script>
 </body>
 </html>
