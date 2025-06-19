@@ -2,35 +2,138 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TON Казино с оплатой</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TON Оплата</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
   <style>
-    /* ... ваши стили ... */
+    body {
+      font-family: sans-serif;
+      background-color: var(--tg-theme-bg-color, #ffffff);
+      color: var(--tg-theme-text-color, #000000);
+      padding: 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    h2 {
+      margin-bottom: 0.5em;
+    }
+
+    .balance {
+      font-size: 16px;
+      margin-bottom: 1em;
+      color: green;
+    }
+
+    button {
+      font-size: 1rem;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      background-color: #0098ea;
+      color: white;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background-color: #888;
+    }
+
+    #wallet-address {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    #connect-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
   </style>
 </head>
 <body>
 
-<button id="wallet-connect">Подключить TON кошелек</button>
+  <div id="connect-container">
+    <div id="connect-button"></div>
+  </div>
 
-<script type="module">
-  import { TonConnect } from "https://unpkg.com/@tonconnect/sdk@1.6.1/dist/tonconnect.esm.min.js";
+  <div class="content">
+    <h2>Оплата 0.5 TON</h2>
+    <div class="balance" id="donated-balance">Вы задонатили: 0 TON</div>
+    <div id="wallet-address"></div>
+    <button id="pay" disabled>💸 Оплатить 0.5 TON</button>
+  </div>
 
-  window.tonConnect = new TonConnect({
-    manifestUrl: 'https://darkcmyk.github.io/tgclickers.github.io/tonconnect-manifest.json'
-  });
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
 
-  const walletConnectBtn = document.getElementById('wallet-connect');
+    const connectButtonId = 'connect-button';
+    const payButton = document.getElementById("pay");
+    const walletDiv = document.getElementById("wallet-address");
+    const balanceDiv = document.getElementById("donated-balance");
 
-  walletConnectBtn.onclick = async () => {
-    try {
-      const wallet = await window.tonConnect.connect();
-      alert('Кошелек подключён: ' + wallet.account);
-      // Далее ваш код...
-    } catch (e) {
-      alert('Ошибка подключения: ' + e.message);
+    const tonConnect = new TON_CONNECT_UI.TonConnectUI({
+      manifestUrl: 'https://darkcmyk.github.io/tgclickers.github.io/tonconnect-manifest.json',
+      buttonRootId: connectButtonId
+    });
+
+    function getDonatedBalance() {
+      return parseFloat(localStorage.getItem("donated_ton") || "0");
     }
-  };
-</script>
 
+    function setDonatedBalance(value) {
+      localStorage.setItem("donated_ton", value.toString());
+    }
+
+    function updateBalanceView() {
+      balanceDiv.innerText = `Вы задонатили: ${getDonatedBalance().toFixed(2)} TON`;
+    }
+
+    updateBalanceView();
+
+    tonConnect.onStatusChange(wallet => {
+      if (wallet) {
+        walletDiv.innerText = "Кошелек: " + wallet.account.address;
+        payButton.disabled = false;
+      } else {
+        walletDiv.innerText = "";
+        payButton.disabled = true;
+      }
+    });
+
+    payButton.onclick = async () => {
+      const tx = {
+        validUntil: Math.floor(Date.now() / 1000) + 600,
+        messages: [
+          {
+            address: "UQBfLcNf5TZZb6SEerk0Cr1V2AawL4glN0IG5DlO8mMyb7Uq",
+            amount: (0.5 * 1e9).toString(),
+          }
+        ]
+      };
+
+      try {
+        await tonConnect.sendTransaction(tx);
+        const newBalance = getDonatedBalance() + 0.5;
+        setDonatedBalance(newBalance);
+        updateBalanceView();
+        tg.showAlert("✅ Оплата прошла успешно!");
+      } catch (err) {
+        tg.showAlert("❌ Ошибка оплаты: " + err.message);
+      }
+    };
+  </script>
 </body>
 </html>
