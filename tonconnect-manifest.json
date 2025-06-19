@@ -1,0 +1,16 @@
+{
+  "manifest_version": "1",
+  "name": "Dark Shop",
+  "description": "Покупка через TON в мини-приложении",
+  "url": "https://darkcmyk.github.io/tgclickers.github.io/",
+  "icons": [
+    {
+      "src": "https://darkcmyk.github.io/tgclickers.github.io/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "bridge": {
+    "type": "ton-connect"
+  }
+}
