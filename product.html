@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Товар</title>
+  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #eef1f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      justify-content: center;
+      animation: fadeIn 1.2s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      padding: 20px;
+      max-width: 320px;
+      text-align: center;
+      animation: slideUp 0.8s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(60px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    img {
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    h3 {
+      margin-top: 15px;
+      font-size: 1.2rem;
+    }
+
+    .city {
+      margin-top: 5px;
+      color: #888;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background: #0098ea;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #status {
+      margin-top: 10px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <img src="https://darkcmyk.github.io/tgclickers.github.io/product.jpg" alt="product">
+    <h3>Качественный товар, ВАФЛЯ, 3g</h3>
+    <div class="city" id="city">Ваш город: ...</div>
+    <button id="buy">💸 Купить за 0.5 TON</button>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    const selectedCity = localStorage.getItem('selectedCity');
+    const walletAddress = localStorage.getItem('walletAddress');
+    const cityDiv = document.getElementById('city');
+    const status = document.getElementById('status');
+
+    if (selectedCity) cityDiv.textContent = "Ваш город: " + selectedCity;
+
+    const tonConnect = new TON_CONNECT_UI.TonConnectUI({
+      manifestUrl: './tonconnect-manifest.json',
+      buttonRootId: null
+    });
+
+    document.getElementById('buy').onclick = async () => {
+      const tx = {
+        validUntil: Math.floor(Date.now() / 1000) + 600,
+        messages: [{
+          address: "UQBfLcNf5TZZb6SEerk0Cr1V2AawL4glN0IG5DlO8mMyb7Uq", // замени при необходимости
+          amount: (0.5 * 1e9).toString()
+        }]
+      };
+
+      try {
+        await tonConnect.sendTransaction(tx);
+        status.textContent = "✅ Успешно оплачено!";
+      } catch (e) {
+        status.style.color = 'red';
+        status.textContent = "❌ Ошибка: " + e.message;
+      }
+    };
+  </script>
+</body>
+</html>
