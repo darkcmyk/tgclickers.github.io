@@ -5,51 +5,74 @@
   <title>Выбор города</title>
   <style>
     body {
-      font-family: sans-serif;
-      padding: 30px;
-      background: #f0f0f0;
-      text-align: center;
+      margin: 0;
+      padding: 40px 20px;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    select, button {
+
+    h1 {
+      font-size: 2rem;
+      color: #00ffff;
+      margin-bottom: 40px;
+    }
+
+    .city-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .city-btn {
+      background: #111;
+      color: #00ffff;
+      border: 2px solid #00ffff;
+      border-radius: 12px;
+      padding: 15px 20px;
+      text-align: center;
       font-size: 1rem;
-      padding: 10px;
-      margin-top: 20px;
-      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      box-shadow: 0 0 15px rgba(0,255,255,0.1);
+    }
+
+    .city-btn:hover {
+      background: #00ffff;
+      color: #000;
+      box-shadow: 0 0 20px rgba(0,255,255,0.4);
+      transform: translateY(-3px);
     }
   </style>
 </head>
 <body>
-  <h2>Выберите ваш город</h2>
-  <select id="city-select">
-    <option disabled selected>-- Выберите город --</option>
-  </select><br>
-  <button id="continue" disabled>Продолжить</button>
+
+  <h1>Выберите город доставки</h1>
+
+  <div class="city-grid">
+    <div class="city-btn" onclick="selectCity('Москва')">Москва</div>
+    <div class="city-btn" onclick="selectCity('Санкт-Петербург')">Санкт-Петербург</div>
+    <div class="city-btn" onclick="selectCity('Екатеринбург')">Екатеринбург</div>
+    <div class="city-btn" onclick="selectCity('Новосибирск')">Новосибирск</div>
+    <div class="city-btn" onclick="selectCity('Казань')">Казань</div>
+    <div class="city-btn" onclick="selectCity('Краснодар')">Краснодар</div>
+    <div class="city-btn" onclick="selectCity('Челябинск')">Челябинск</div>
+    <div class="city-btn" onclick="selectCity('Уфа')">Уфа</div>
+    <div class="city-btn" onclick="selectCity('Нижний Новгород')">Нижний Новгород</div>
+    <div class="city-btn" onclick="selectCity('Пермь')">Пермь</div>
+  </div>
 
   <script>
-    const cities = [
-      "Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", "Казань", "Нижний Новгород",
-      "Челябинск", "Самара", "Ростов-на-Дону", "Краснодар", "Тюмень", "Владивосток"
-    ];
-
-    const select = document.getElementById('city-select');
-    const btn = document.getElementById('continue');
-
-    cities.forEach(city => {
-      const opt = document.createElement('option');
-      opt.value = city;
-      opt.textContent = city;
-      select.appendChild(opt);
-    });
-
-    select.onchange = () => {
-      btn.disabled = false;
-    };
-
-    btn.onclick = () => {
-      const city = select.value;
+    function selectCity(city) {
       localStorage.setItem('selectedCity', city);
-      window.location.href = 'product.html';
-    };
+      window.location.href = "product.html";
+    }
   </script>
+
 </body>
 </html>
