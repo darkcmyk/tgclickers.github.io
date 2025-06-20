@@ -18,8 +18,11 @@
       height: 100vh;
     }
 
-    h2 {
-      margin-bottom: 0.5em;
+    img {
+      width: 200px;
+      height: auto;
+      border-radius: 12px;
+      margin: 20px auto;
     }
 
     .balance {
@@ -48,10 +51,9 @@
       font-size: 14px;
     }
 
-    #connect-container {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
+    .description {
+      margin-top: 10px;
+      font-size: 16px;
     }
 
     .content {
@@ -64,29 +66,27 @@
 </head>
 <body>
 
-  <div id="connect-container">
-    <div id="connect-button"></div>
-  </div>
-
-  <div class="content">
-    <h2>Оплата 0.5 TON</h2>
-    <div class="balance" id="donated-balance">Вы задонатили: 0 TON</div>
+  <div class="content" id="app-content" style="display: none;">
     <div id="wallet-address"></div>
-    <button id="pay" disabled>💸 Оплатить 0.5 TON</button>
+    <div class="balance" id="donated-balance">Удачных покупок! Подать жалобу на магазин: @forexampletg</div>
+
+    <img src="https://krak33.at/storage/image/gy/d1/8pg97fqp3hva14yc.webp/11664c54-9e35-4184-ae85-9b02fa49e2ca/" alt="Product image" />
+    <div class="description"><strong>Качественный товар, ALPHA PVP, 3 gram</strong></div>
+
+    <button id="pay" disabled>💸 Оплатить 2 TON</button>
   </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    const connectButtonId = 'connect-button';
     const payButton = document.getElementById("pay");
     const walletDiv = document.getElementById("wallet-address");
     const balanceDiv = document.getElementById("donated-balance");
+    const contentDiv = document.getElementById("app-content");
 
     const tonConnect = new TON_CONNECT_UI.TonConnectUI({
-      manifestUrl: 'https://darkcmyk.github.io/tgclickers.github.io/tonconnect-manifest.json',
-      buttonRootId: connectButtonId
+      manifestUrl: 'https://darkcmyk.github.io/tgclickers.github.io/tonconnect-manifest.json'
     });
 
     function getDonatedBalance() {
@@ -107,9 +107,12 @@
       if (wallet) {
         walletDiv.innerText = "Кошелек: " + wallet.account.address;
         payButton.disabled = false;
+        contentDiv.style.display = "flex";
       } else {
-        walletDiv.innerText = "";
+        walletDiv.innerText = "Пожалуйста, привяжите TON кошелек...";
         payButton.disabled = true;
+        contentDiv.style.display = "none";
+        tonConnect.connectWallet(); // Автоподключение
       }
     });
 
