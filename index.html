@@ -2,61 +2,16 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TON Оплата</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <title>Подключение кошелька</title>
   <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
   <style>
     body {
       font-family: sans-serif;
-      background-color: var(--tg-theme-bg-color, #ffffff);
-      color: var(--tg-theme-text-color, #000000);
-      padding: 20px;
-      text-align: center;
       display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-
-    select, button {
-      font-size: 1rem;
-      padding: 10px;
-      border-radius: 10px;
-      margin-top: 15px;
-    }
-
-    button {
-      background-color: #0098ea;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      background-color: #888;
-    }
-
-    img {
-      width: 220px;
-      border-radius: 10px;
-      margin: 20px auto;
-    }
-
-    .description {
-      margin-top: 10px;
-      font-size: 16px;
-    }
-
-    #wallet-address {
-      margin-top: 10px;
-      font-size: 14px;
-    }
-
-    .content {
-      flex: 1;
-      display: none;
-      flex-direction: column;
       justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f5f5f5;
     }
   </style>
 </head>
@@ -64,90 +19,18 @@
 
   <div id="connect-button"></div>
 
-  <div id="wallet-address"></div>
-
-  <div class="content" id="app-content">
-    <select id="city-select">
-      <option disabled selected>Выберите город</option>
-    </select>
-
-    <img src="https://darkcmyk.github.io/tgclickers.github.io/product.jpg" alt="Product" />
-    <div class="description"><strong>Качественный товар, ВАФЛЯ, 3 gram</strong></div>
-
-    <button id="pay" disabled>💸 Оплатить 0.5 TON</button>
-  </div>
-
   <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-
-    const walletDiv = document.getElementById("wallet-address");
-    const contentDiv = document.getElementById("app-content");
-    const citySelect = document.getElementById("city-select");
-    const payButton = document.getElementById("pay");
-
     const tonConnect = new TON_CONNECT_UI.TonConnectUI({
-      manifestUrl: 'https://darkcmyk.github.io/tgclickers.github.io/tonconnect-manifest.json',
+      manifestUrl: './tonconnect-manifest.json',
       buttonRootId: 'connect-button'
-    });
-
-    const cities = [
-      "Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", "Казань", "Нижний Новгород", "Челябинск", "Самара",
-      "Омск", "Ростов-на-Дону", "Уфа", "Красноярск", "Пермь", "Воронеж", "Волгоград", "Краснодар", "Тюмень", "Саратов",
-      "Тольятти", "Ижевск", "Барнаул", "Ульяновск", "Иркутск", "Хабаровск", "Ярославль", "Владивосток", "Махачкала",
-      "Томск", "Оренбург", "Кемерово", "Новокузнецк", "Рязань", "Астрахань", "Пенза", "Липецк", "Киров", "Тула",
-      "Чебоксары", "Калининград", "Брянск", "Курск", "Иваново", "Магнитогорск", "Тверь", "Ставрополь", "Белгород",
-      "Сочи", "Нижний Тагил", "Архангельск", "Владимир", "Смоленск", "Сургут", "Калуга", "Чита", "Якутск", "Грозный",
-      "Волжский", "Череповец", "Севастополь", "Нальчик", "Комсомольск-на-Амуре", "Кострома", "Новороссийск", "Элиста",
-      "Йошкар-Ола", "Псков", "Норильск", "Абакан", "Орёл", "Великий Новгород", "Сыктывкар", "Благовещенск", "Улан-Удэ"
-    ];
-
-    cities.forEach(city => {
-      const option = document.createElement("option");
-      option.value = city;
-      option.textContent = city;
-      citySelect.appendChild(option);
     });
 
     tonConnect.onStatusChange(wallet => {
       if (wallet) {
-        walletDiv.innerText = "Кошелек: " + wallet.account.address;
-        contentDiv.style.display = "flex";
-      } else {
-        walletDiv.innerText = "⛔ Привяжите TON кошелек...";
-        contentDiv.style.display = "none";
-        tonConnect.connectWallet(); // Автозапуск подключения
+        localStorage.setItem('walletAddress', wallet.account.address);
+        window.location.href = 'select-city.html';
       }
     });
-
-    citySelect.onchange = () => {
-      payButton.disabled = false;
-    };
-
-    payButton.onclick = async () => {
-      const selectedCity = citySelect.value;
-      if (!selectedCity || selectedCity === "Выберите город") {
-        tg.showAlert("⚠️ Пожалуйста, выберите город");
-        return;
-      }
-
-      const tx = {
-        validUntil: Math.floor(Date.now() / 1000) + 600,
-        messages: [
-          {
-            address: "UQBfLcNf5TZZb6SEerk0Cr1V2AawL4glN0IG5DlO8mMyb7Uq",
-            amount: (0.5 * 1e9).toString(),
-          }
-        ]
-      };
-
-      try {
-        await tonConnect.sendTransaction(tx);
-        tg.showAlert("✅ Оплата прошла успешно! Город: " + selectedCity);
-      } catch (err) {
-        tg.showAlert("❌ Ошибка оплаты: " + err.message);
-      }
-    };
   </script>
 </body>
 </html>
