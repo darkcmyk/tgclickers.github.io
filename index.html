@@ -18,27 +18,17 @@
       height: 100vh;
     }
 
-    img {
-      width: 200px;
-      height: auto;
-      border-radius: 12px;
-      margin: 20px auto;
-    }
-
-    .balance {
-      font-size: 16px;
-      margin-bottom: 1em;
-      color: green;
+    select, button {
+      font-size: 1rem;
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 15px;
     }
 
     button {
-      font-size: 1rem;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 10px;
       background-color: #0098ea;
       color: white;
-      margin-top: 20px;
+      border: none;
       cursor: pointer;
     }
 
@@ -46,9 +36,10 @@
       background-color: #888;
     }
 
-    #wallet-address {
-      margin-top: 10px;
-      font-size: 14px;
+    img {
+      width: 220px;
+      border-radius: 10px;
+      margin: 20px auto;
     }
 
     .description {
@@ -56,9 +47,14 @@
       font-size: 16px;
     }
 
+    #wallet-address {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
     .content {
       flex: 1;
-      display: flex;
+      display: none;
       flex-direction: column;
       justify-content: center;
     }
@@ -66,57 +62,75 @@
 </head>
 <body>
 
-  <div class="content" id="app-content" style="display: none;">
-    <div id="wallet-address"></div>
-    <div class="balance" id="donated-balance">Удачных покупок! Подать жалобу на магазин: @forexampletg</div>
+  <div id="connect-button"></div>
 
-    <img src="https://krak33.at/storage/image/gy/d1/8pg97fqp3hva14yc.webp/11664c54-9e35-4184-ae85-9b02fa49e2ca/" alt="Product image" />
-    <div class="description"><strong>Качественный товар, ALPHA PVP, 3 gram</strong></div>
+  <div id="wallet-address"></div>
 
-    <button id="pay" disabled>💸 Оплатить 2 TON</button>
+  <div class="content" id="app-content">
+    <select id="city-select">
+      <option disabled selected>Выберите город</option>
+    </select>
+
+    <img src="https://darkcmyk.github.io/tgclickers.github.io/product.jpg" alt="Product" />
+    <div class="description"><strong>Качественный товар, ВАФЛЯ, 3 gram</strong></div>
+
+    <button id="pay" disabled>💸 Оплатить 0.5 TON</button>
   </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    const payButton = document.getElementById("pay");
     const walletDiv = document.getElementById("wallet-address");
-    const balanceDiv = document.getElementById("donated-balance");
     const contentDiv = document.getElementById("app-content");
+    const citySelect = document.getElementById("city-select");
+    const payButton = document.getElementById("pay");
 
     const tonConnect = new TON_CONNECT_UI.TonConnectUI({
-      manifestUrl: 'https://darkcmyk.github.io/tgclickers.github.io/tonconnect-manifest.json'
+      manifestUrl: 'https://darkcmyk.github.io/tgclickers.github.io/tonconnect-manifest.json',
+      buttonRootId: 'connect-button'
     });
 
-    function getDonatedBalance() {
-      return parseFloat(localStorage.getItem("donated_ton") || "0");
-    }
+    const cities = [
+      "Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", "Казань", "Нижний Новгород", "Челябинск", "Самара",
+      "Омск", "Ростов-на-Дону", "Уфа", "Красноярск", "Пермь", "Воронеж", "Волгоград", "Краснодар", "Тюмень", "Саратов",
+      "Тольятти", "Ижевск", "Барнаул", "Ульяновск", "Иркутск", "Хабаровск", "Ярославль", "Владивосток", "Махачкала",
+      "Томск", "Оренбург", "Кемерово", "Новокузнецк", "Рязань", "Астрахань", "Пенза", "Липецк", "Киров", "Тула",
+      "Чебоксары", "Калининград", "Брянск", "Курск", "Иваново", "Магнитогорск", "Тверь", "Ставрополь", "Белгород",
+      "Сочи", "Нижний Тагил", "Архангельск", "Владимир", "Смоленск", "Сургут", "Калуга", "Чита", "Якутск", "Грозный",
+      "Волжский", "Череповец", "Севастополь", "Нальчик", "Комсомольск-на-Амуре", "Кострома", "Новороссийск", "Элиста",
+      "Йошкар-Ола", "Псков", "Норильск", "Абакан", "Орёл", "Великий Новгород", "Сыктывкар", "Благовещенск", "Улан-Удэ"
+    ];
 
-    function setDonatedBalance(value) {
-      localStorage.setItem("donated_ton", value.toString());
-    }
-
-    function updateBalanceView() {
-      balanceDiv.innerText = `Вы задонатили: ${getDonatedBalance().toFixed(2)} TON`;
-    }
-
-    updateBalanceView();
+    cities.forEach(city => {
+      const option = document.createElement("option");
+      option.value = city;
+      option.textContent = city;
+      citySelect.appendChild(option);
+    });
 
     tonConnect.onStatusChange(wallet => {
       if (wallet) {
         walletDiv.innerText = "Кошелек: " + wallet.account.address;
-        payButton.disabled = false;
         contentDiv.style.display = "flex";
       } else {
-        walletDiv.innerText = "Пожалуйста, привяжите TON кошелек...";
-        payButton.disabled = true;
+        walletDiv.innerText = "⛔ Привяжите TON кошелек...";
         contentDiv.style.display = "none";
-        tonConnect.connectWallet(); // Автоподключение
+        tonConnect.connectWallet(); // Автозапуск подключения
       }
     });
 
+    citySelect.onchange = () => {
+      payButton.disabled = false;
+    };
+
     payButton.onclick = async () => {
+      const selectedCity = citySelect.value;
+      if (!selectedCity || selectedCity === "Выберите город") {
+        tg.showAlert("⚠️ Пожалуйста, выберите город");
+        return;
+      }
+
       const tx = {
         validUntil: Math.floor(Date.now() / 1000) + 600,
         messages: [
@@ -129,10 +143,7 @@
 
       try {
         await tonConnect.sendTransaction(tx);
-        const newBalance = getDonatedBalance() + 0.5;
-        setDonatedBalance(newBalance);
-        updateBalanceView();
-        tg.showAlert("✅ Оплата прошла успешно!");
+        tg.showAlert("✅ Оплата прошла успешно! Город: " + selectedCity);
       } catch (err) {
         tg.showAlert("❌ Ошибка оплаты: " + err.message);
       }
