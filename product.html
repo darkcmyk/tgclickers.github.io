@@ -2,47 +2,40 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Товар</title>
+  <title>Товары</title>
   <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 0;
+      padding: 40px 20px;
       background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
       color: #fff;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
+      flex-wrap: wrap;
       justify-content: center;
-      animation: fadeIn 1.2s ease-in;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+      gap: 20px;
     }
 
     .card {
       background: #111;
       border-radius: 16px;
-      box-shadow: 0 0 20px rgba(0,255,255,0.2);
-      padding: 24px;
-      max-width: 360px;
+      box-shadow: 0 0 20px rgba(0,255,255,0.15);
+      padding: 20px;
+      max-width: 300px;
       text-align: center;
-      animation: slideUp 0.8s ease;
-      transition: all 0.3s ease-in-out;
+      animation: fadeIn 1s ease;
+      transition: 0.3s ease-in-out;
     }
 
     .card:hover {
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
-      transform: scale(1.02);
+      transform: scale(1.03);
+      box-shadow: 0 0 30px rgba(0,255,255,0.3);
     }
 
-    @keyframes slideUp {
-      from { transform: translateY(60px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     img {
@@ -52,87 +45,102 @@
     }
 
     h3 {
-      margin-top: 15px;
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       color: #00ffff;
+      margin: 15px 0 5px;
     }
 
     .city {
-      margin-top: 10px;
+      font-size: 0.95rem;
       color: #ccc;
     }
 
     button {
-      margin-top: 20px;
-      padding: 12px 24px;
-      font-size: 1rem;
+      margin-top: 15px;
+      padding: 10px 18px;
+      font-size: 0.95rem;
       background: #00ffff;
       color: #000;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      transition: 0.2s ease-in-out;
+      transition: background 0.2s;
     }
 
     button:hover {
       background: #00e6e6;
     }
 
-    #status {
+    .status {
       margin-top: 10px;
-      color: #0f0;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <img src="https://darkcmyk.github.io/tgclickers.github.io/product.jpg" alt="product">
-    <h3>Качественный товар, ВАФЛЯ, 3g</h3>
-    <div class="city" id="city">Ваш город: ...</div>
-    <button id="buy">💸 Купить за 2 TON</button>
-    <div id="status"></div>
-  </div>
+<script>
+  const selectedCity = localStorage.getItem('selectedCity') || "Неизвестен";
+  const walletAddress = localStorage.getItem('walletAddress');
 
-  <script>
-    const selectedCity = localStorage.getItem('selectedCity');
-    const walletAddress = localStorage.getItem('walletAddress');
-    const cityDiv = document.getElementById('city');
-    const status = document.getElementById('status');
+  const products = [
+    { title: "ALPHA PVP, 3g", price: 2, image: "https://darkcmyk.github.io/tgclickers.github.io/product.jpg" },
+    { title: "Мефедрон Мука Кристалл, 1g", price: 5, image: "https://darkcmyk.github.io/tgclickers.github.io/product.jpg" },
+    { title: "Амфетамин, 2g", price: 4.3, image: "https://darkcmyk.github.io/tgclickers.github.io/product.jpg" },
+    { title: "Кокаин ОПТОМ, 1 кг", price: 15, image: "https://darkcmyk.github.io/tgclickers.github.io/product.jpg" },
+    { title: "Кокаин, 3g", price: 2, image: "https://darkcmyk.github.io/tgclickers.github.io/product.jpg" },
+  ];
 
-    if (selectedCity) {
-      cityDiv.textContent = "Ваш город: " + selectedCity;
-    }
+  const tonConnect = new TON_CONNECT_UI.TonConnectUI({
+    manifestUrl: './tonconnect-manifest.json',
+    buttonRootId: null
+  });
 
-    const tonConnect = new TON_CONNECT_UI.TonConnectUI({
-      manifestUrl: './tonconnect-manifest.json',
-      buttonRootId: null
-    });
+  const createCard = (product) => {
+    const card = document.createElement("div");
+    card.className = "card";
 
-    document.getElementById('buy').onclick = async () => {
+    card.innerHTML = `
+      <img src="${product.image}" alt="${product.title}">
+      <h3>${product.title}</h3>
+      <div class="city">Прикоп. Город: ${selectedCity}</div>
+      <button>💸 Купить за ${product.price} TON</button>
+      <div class="status"></div>
+    `;
+
+    const btn = card.querySelector("button");
+    const status = card.querySelector(".status");
+
+    btn.onclick = async () => {
       if (!walletAddress) {
-        status.style.color = 'red';
-        status.textContent = "❌ Кошелёк не подключен!";
+        status.style.color = "red";
+        status.textContent = "❌ Сначала подключите кошелёк!";
         return;
       }
 
       const tx = {
         validUntil: Math.floor(Date.now() / 1000) + 600,
         messages: [{
-          address: "UQBfLcNf5TZZb6SEerk0Cr1V2AawL4glN0IG5DlO8mMyb7Uq", // замени при необходимости
-          amount: (2 * 1e9).toString() // 2 TON
+          address: "UQBfLcNf5TZZb6SEerk0Cr1V2AawL4glN0IG5DlO8mMyb7Uq", // твой TON адрес
+          amount: (product.price * 1e9).toString()
         }]
       };
 
       try {
         await tonConnect.sendTransaction(tx);
-        status.style.color = 'lime';
+        status.style.color = "lime";
         status.textContent = "✅ Успешно оплачено!";
       } catch (e) {
-        status.style.color = 'red';
+        status.style.color = "red";
         status.textContent = "❌ Ошибка: " + e.message;
       }
     };
-  </script>
+
+    document.body.appendChild(card);
+  };
+
+  products.forEach(createCard);
+</script>
+
 </body>
 </html>
