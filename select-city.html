@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Выбор города</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 30px;
+      background: #f0f0f0;
+      text-align: center;
+    }
+    select, button {
+      font-size: 1rem;
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Выберите ваш город</h2>
+  <select id="city-select">
+    <option disabled selected>-- Выберите город --</option>
+  </select><br>
+  <button id="continue" disabled>Продолжить</button>
+
+  <script>
+    const cities = [
+      "Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", "Казань", "Нижний Новгород",
+      "Челябинск", "Самара", "Ростов-на-Дону", "Краснодар", "Тюмень", "Владивосток"
+    ];
+
+    const select = document.getElementById('city-select');
+    const btn = document.getElementById('continue');
+
+    cities.forEach(city => {
+      const opt = document.createElement('option');
+      opt.value = city;
+      opt.textContent = city;
+      select.appendChild(opt);
+    });
+
+    select.onchange = () => {
+      btn.disabled = false;
+    };
+
+    btn.onclick = () => {
+      const city = select.value;
+      localStorage.setItem('selectedCity', city);
+      window.location.href = 'product.html';
+    };
+  </script>
+</body>
+</html>
