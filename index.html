@@ -1,36 +1,122 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>Подключение кошелька</title>
-  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Успей нажать</title>
   <style>
     body {
-      font-family: sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: #f5f5f5;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #222;
+      color: white;
+      text-align: center;
+    }
+    h1 {
+      margin-top: 20px;
+    }
+    #game {
+      position: relative;
+      margin: 20px auto;
+      width: 400px;
+      height: 400px;
+      background: #333;
+      border: 3px solid #555;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .ball {
+      width: 40px;
+      height: 40px;
+      background: rgb(0, 200, 255);
+      border-radius: 50%;
+      position: absolute;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0,255,255,0.7);
+      transition: transform 0.1s ease;
+    }
+    .ball:active {
+      transform: scale(0.9);
+    }
+    #info {
+      margin-top: 10px;
+      font-size: 18px;
+    }
+    #game-over {
+      font-size: 24px;
+      color: red;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
 
-  <div id="connect-button"></div>
+  <h1>💥 Успей нажать!</h1>
+  <div id="info">Очки: 0 | Жизни: 3</div>
+  <div id="game"></div>
+  <div id="game-over"></div>
 
   <script>
-    const tonConnect = new TON_CONNECT_UI.TonConnectUI({
-      manifestUrl: './tonconnect-manifest.json',
-      buttonRootId: 'connect-button'
-    });
+    const game = document.getElementById('game');
+    const info = document.getElementById('info');
+    const gameOverEl = document.getElementById('game-over');
 
-    tonConnect.onStatusChange(wallet => {
-      if (wallet) {
-        localStorage.setItem('walletAddress', wallet.account.address);
-        window.location.href = 'select-city.html';
-      }
-    });
+    let score = 0;
+    let lives = 3;
+    let speed = 1500;
+
+    function updateInfo() {
+      info.textContent = `Очки: ${score} | Жизни: ${lives}`;
+    }
+
+    function spawnBall() {
+      const ball = document.createElement('div');
+      ball.className = 'ball';
+
+      const x = Math.random() * (360);
+      const y = Math.random() * (360);
+      ball.style.left = `${x}px`;
+      ball.style.top = `${y}px`;
+
+      let clicked = false;
+
+      ball.onclick = () => {
+        clicked = true;
+        score++;
+        updateInfo();
+        ball.remove();
+
+        // ускорение
+        if (speed > 500) {
+          speed -= 30;
+        }
+
+        setTimeout(spawnBall, speed);
+      };
+
+      game.appendChild(ball);
+
+      setTimeout(() => {
+        if (!clicked && document.body.contains(ball)) {
+          ball.remove();
+          lives--;
+          updateInfo();
+          if (lives === 0) {
+            endGame();
+          } else {
+            setTimeout(spawnBall, speed);
+          }
+        }
+      }, speed);
+    }
+
+    function endGame() {
+      gameOverEl.textContent = 'Игра окончена! 😢';
+    }
+
+    // Старт
+    updateInfo();
+    spawnBall();
   </script>
+
 </body>
 </html>
