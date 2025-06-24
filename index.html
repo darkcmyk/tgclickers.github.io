@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Успей нажать</title>
+  <title>test</title>
   <style>
     body {
       margin: 0;
@@ -50,73 +50,8 @@
 </head>
 <body>
 
-  <h1>💥 Успей нажать!</h1>
-  <div id="info">Очки: 0 | Жизни: 3</div>
-  <div id="game"></div>
-  <div id="game-over"></div>
-
-  <script>
-    const game = document.getElementById('game');
-    const info = document.getElementById('info');
-    const gameOverEl = document.getElementById('game-over');
-
-    let score = 0;
-    let lives = 3;
-    let speed = 1500;
-
-    function updateInfo() {
-      info.textContent = `Очки: ${score} | Жизни: ${lives}`;
-    }
-
-    function spawnBall() {
-      const ball = document.createElement('div');
-      ball.className = 'ball';
-
-      const x = Math.random() * (360);
-      const y = Math.random() * (360);
-      ball.style.left = `${x}px`;
-      ball.style.top = `${y}px`;
-
-      let clicked = false;
-
-      ball.onclick = () => {
-        clicked = true;
-        score++;
-        updateInfo();
-        ball.remove();
-
-        // ускорение
-        if (speed > 500) {
-          speed -= 30;
-        }
-
-        setTimeout(spawnBall, speed);
-      };
-
-      game.appendChild(ball);
-
-      setTimeout(() => {
-        if (!clicked && document.body.contains(ball)) {
-          ball.remove();
-          lives--;
-          updateInfo();
-          if (lives === 0) {
-            endGame();
-          } else {
-            setTimeout(spawnBall, speed);
-          }
-        }
-      }, speed);
-    }
-
-    function endGame() {
-      gameOverEl.textContent = 'Игра окончена! 😢';
-    }
-
-    // Старт
-    updateInfo();
-    spawnBall();
-  </script>
+  <h1>test1</h1>
+  <div id="info">test2</div>
 
 </body>
 </html>
