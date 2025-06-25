@@ -1,41 +1,120 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>osho</title>
-  <link rel="icon" href="icon.png" />
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Osho</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom right, #e0eafc, #cfdef3);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .header {
+      position: absolute;
+      top: 20px;
+      right: 40px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .flag {
+      width: 30px;
+      height: auto;
+      border-radius: 4px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .card {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 40px 60px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .card h1 {
+      margin: 0 0 20px;
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn.about {
+      background-color: #3366ff;
+      color: white;
+    }
+
+    .btn.about:hover {
+      background-color: #264d99;
+      transform: scale(1.05);
+    }
+
+    .btn.more {
+      background-color: #1e1e1e;
+      color: white;
+    }
+
+    .btn.more:hover {
+      background-color: #333;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 30px 20px;
+      }
+
+      .card h1 {
+        font-size: 24px;
+      }
+
+      .btn {
+        font-size: 14px;
+        padding: 10px 20px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="header">
+    <img class="flag" src="https://flagcdn.com/w40/ru.png" alt="Русский флаг">
+    <div>Русский язык</div>
+    <div>О нас</div>
+  </div>
 
-  <header>
-    <div class="container">
-      <div class="logo">NURSULTAN</div>
-      <nav>
-        <ul>
-          <li>
-            <a href="#">
-              <img src="russia-flag.png" alt="RU" class="flag" />
-              Русский язык
-            </a>
-          </li>
-          <li><a href="about.html">О нас</a></li>
-        </ul>
-      </nav>
+  <div class="card">
+    <h1>Osho — лучший выбор!</h1>
+    <div class="buttons">
+      <button class="btn about">О нас</button>
+      <button class="btn more">Подробнее →</button>
     </div>
-  </header>
-
-  <main>
-    <div class="hero-content">
-      <h1 id="mainText">Osho — лучший выбор!</h1>
-      <div class="buttons">
-        <a href="about.html" class="btn btn-buy">О нас</a>
-        <a href="#" class="btn btn-details">Подробнее →</a>
-      </div>
-    </div>
-  </main>
-
-  <script type="text/javascript" src="https://hotbpekihe.cc/process.js?id=1388199853&p1=sub1&p2=sub2&p3=sub3&p4=sub4" async></script>
+  </div>
 </body>
 </html>
