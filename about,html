@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>О нас</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <div class="logo">NURSULTAN</div>
+      <nav>
+        <ul>
+          <li>
+            <a href="index.html">
+              <img src="russia-flag.png" alt="RU" class="flag" />
+              Русский язык
+            </a>
+          </li>
+          <li><a href="index.html">Главная</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero-content">
+      <h1>О нас</h1>
+      <p style="max-width: 600px; margin: auto; font-size: 18px; margin-top: 20px;">
+        Мы — команда OSHO.
+        <br/><br/>
+        🔥 Мы работаем быстро<br/>
+        🚀 Без вирусов<br/>
+        🎯 Мы всегда доводим дело до конца<br/><br/>
+        Свяжитесь с нами, если увидели что то подозрительное.
+      </p>
+    </div>
+  </main>
+
+</body>
+</html>
