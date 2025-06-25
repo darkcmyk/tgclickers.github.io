@@ -1,0 +1,94 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Segoe UI', sans-serif;
+  color: #fff;
+  background: url('bg.jpg') center/cover no-repeat;
+  height: 100vh;
+  overflow: hidden;
+}
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+header {
+  padding: 20px 0;
+  position: absolute;
+  width: 100%;
+  z-index: 10;
+}
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+}
+nav a {
+  color: #ddd;
+  text-decoration: none;
+  font-size: 14px;
+}
+nav a:hover { color: #fff; }
+.logo {
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+.btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+.btn-buy {
+  background: #3968ff;
+  color: #fff;
+}
+.btn-buy:hover {
+  background: #2a4acf;
+}
+.btn-login {
+  background: #1f1f23;
+  color: #fff;
+  margin-left: 10px;
+}
+.btn-details {
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  margin-left: 10px;
+}
+main {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.hero-content {
+  text-align: center;
+  background: rgba(0,0,0,0.5);
+  padding: 40px;
+  border-radius: 10px;
+  animation: fadeInDown 1s ease-out;
+}
+h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+  animation: fadeInUp 1s ease-out;
+}
+.buttons a {
+  animation: fadeInUp 1.2s ease-out;
+}
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
