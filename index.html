@@ -1,223 +1,215 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dark - Био</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto&display=swap');
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dark - Био</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto&display=swap');
 
-    /* Общие стили */
-    * {
-      box-sizing: border-box;
-    }
-    body, html {
-      margin: 0; padding: 0;
-      height: 100%;
-      font-family: 'Roboto', sans-serif;
-      overflow: hidden;
-      background: url('gif.gif') center center / cover no-repeat fixed;
-      position: relative;
-      color: white;
-    }
+  /* ОБЩИЙ ЧЁРНЫЙ СТИЛЬ */
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0; padding: 0;
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+    background: #000;
+    color: #00fff7;
+    overflow: hidden;
+    position: relative;
+  }
 
-    /* Плавное затемнение фона + анимация */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.6);
-      animation: pulseShadow 6s ease-in-out infinite alternate;
-      z-index: 0;
-      pointer-events: none;
-    }
+  /* ФОН С GIF И БЛЮРОМ */
+  #background {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: url('gif.gif') center center / cover no-repeat fixed;
+    filter: blur(12px) brightness(0.3);
+    z-index: -2;
+    animation: pulseBlur 8s ease-in-out infinite alternate;
+  }
 
-    @keyframes pulseShadow {
-      0%   { background: rgba(0,0,0,0.5); }
-      100% { background: rgba(0,0,0,0.7); }
-    }
+  @keyframes pulseBlur {
+    0% { filter: blur(10px) brightness(0.25); }
+    100% { filter: blur(14px) brightness(0.35); }
+  }
 
-    /* Центрированный контейнер */
-    .container {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(10,10,10,0.85);
-      border-radius: 20px;
-      padding: 30px 40px;
-      width: 320px;
-      text-align: center;
+  /* ПОМЕЩЕНИЕ КОНТЕНТА В ЦЕНТРЕ */
+  .container {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: saturate(180%) blur(10px);
+    border-radius: 24px;
+    padding: 30px 40px;
+    width: 320px;
+    box-shadow:
+      0 0 20px #00fff7,
+      0 0 40px #00fff7 inset;
+    text-align: center;
+    animation: fadeSlideIn 1.5s ease forwards;
+    opacity: 0;
+    color: #00fff7;
+    user-select: none;
+  }
+
+  @keyframes fadeSlideIn {
+    0% {opacity: 0; transform: translate(-50%, -40%);}
+    100% {opacity: 1; transform: translate(-50%, -50%);}
+  }
+
+  /* ИМЯ */
+  .name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.6rem;
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+    text-shadow:
+      0 0 10px #00fff7,
+      0 0 20px #00fff7,
+      0 0 30px #00fff7;
+  }
+
+  /* БИО */
+  .bio {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 22px;
+    color: #7fffd4;
+    animation: fadeInText 2.5s ease forwards;
+    opacity: 0;
+  }
+  @keyframes fadeInText {
+    to {opacity: 1;}
+  }
+
+  /* СЧЕТЧИК ПОСЕЩЕНИЙ */
+  .counter {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    padding: 8px 16px;
+    border-radius: 14px;
+    background: rgba(0, 255, 255, 0.12);
+    box-shadow:
+      0 0 15px #00fff7,
+      inset 0 0 10px #00fff7;
+    user-select: none;
+    animation: glowPulse 3s ease-in-out infinite alternate;
+  }
+  @keyframes glowPulse {
+    0% {
       box-shadow:
         0 0 15px #00fff7,
-        0 0 40px #00fff7,
         inset 0 0 10px #00fff7;
-      z-index: 10;
-      animation: slideUpFade 1.5s ease forwards;
-      opacity: 0;
     }
-
-    @keyframes slideUpFade {
-      0% {opacity: 0; transform: translate(-50%, -40%);}
-      100% {opacity: 1; transform: translate(-50%, -50%);}
-    }
-
-    /* Имя с необычным шрифтом и неоном */
-    .name {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 2.4rem;
-      letter-spacing: 3px;
-      margin-bottom: 8px;
-      text-shadow:
-        0 0 8px #00fff7,
-        0 0 12px #00fff7,
-        0 0 20px #00fff7;
-    }
-
-    /* Био с легкой анимацией появления */
-    .bio {
-      font-size: 1rem;
-      line-height: 1.5;
-      margin-bottom: 20px;
-      color: #c0f9f9;
-      animation: fadeInText 2.5s ease forwards;
-      opacity: 0;
-    }
-
-    @keyframes fadeInText {
-      to {opacity: 1;}
-    }
-
-    /* Счетчик посещений */
-    .counter {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.1rem;
-      margin-bottom: 20px;
-      padding: 8px 15px;
-      border-radius: 12px;
-      background: rgba(0,255,255,0.1);
+    100% {
       box-shadow:
-        0 0 10px #00fff7,
-        inset 0 0 6px #00fff7;
-      user-select: none;
-      animation: glowPulse 3s ease-in-out infinite alternate;
+        0 0 35px #00fff7,
+        inset 0 0 20px #00fff7;
     }
+  }
 
-    @keyframes glowPulse {
-      0% { box-shadow:
-        0 0 10px #00fff7,
-        inset 0 0 6px #00fff7; }
-      100% { box-shadow:
-        0 0 25px #00fff7,
-        inset 0 0 15px #00fff7; }
-    }
+  /* МУЗЫКАЛЬНЫЙ ПОЛЗУНОК И КНОПКА */
+  .music-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .music-controls button {
+    background: transparent;
+    border: 2px solid #00fff7;
+    border-radius: 14px;
+    color: #00fff7;
+    font-size: 14px;
+    padding: 7px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .music-controls button:hover {
+    background-color: #00fff7;
+    color: #000;
+  }
+  .music-controls input[type="range"] {
+    -webkit-appearance: none;
+    width: 140px;
+    height: 6px;
+    background: #004040;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .music-controls input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #00fff7;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow:
+      0 0 10px #00fff7;
+    transition: background-color 0.3s ease;
+  }
+  .music-controls input[type="range"]:hover {
+    background-color: #006666;
+  }
 
-    /* Контейнер управления музыкой */
-    .music-controls {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 25px;
-    }
-
-    .music-controls button {
-      background: transparent;
-      border: 2px solid #00fff7;
-      border-radius: 12px;
-      color: #00fff7;
-      font-size: 14px;
-      padding: 6px 16px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .music-controls button:hover {
-      background-color: #00fff7;
-      color: #000;
-    }
-
-    .music-controls input[type="range"] {
-      -webkit-appearance: none;
-      width: 120px;
-      height: 6px;
-      background: #003333;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .music-controls input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 16px;
-      height: 16px;
-      background: #00fff7;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow:
-        0 0 8px #00fff7;
-      transition: background-color 0.3s ease;
-    }
-
-    .music-controls input[type="range"]:hover {
-      background-color: #006666;
-    }
-
-    /* Соцсети */
-    .socials {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-    }
-
-    .socials a {
-      display: inline-block;
-      width: 48px; height: 48px;
-      border-radius: 50%;
-      border: 2px solid #00fff7;
-      box-shadow:
-        0 0 10px #00fff7,
-        inset 0 0 6px #000;
-      transition: box-shadow 0.3s ease, transform 0.3s ease;
-      background-color: rgba(0, 0, 0, 0.7);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-    }
-
-    .socials a:hover {
-      box-shadow:
-        0 0 20px #00fff7,
-        0 0 30px #00fff7,
-        inset 0 0 8px #000;
-      transform: scale(1.15);
-    }
-
-    .socials img {
-      max-width: 26px;
-      max-height: 26px;
-      filter: drop-shadow(0 0 1px #00fff7);
-      user-select: none;
-      pointer-events: none;
-    }
-
-  </style>
+  /* СОЦСЕТИ */
+  .socials {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+  }
+  .socials a {
+    display: inline-flex;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    border: 2.5px solid #00fff7;
+    box-shadow:
+      0 0 14px #00fff7,
+      inset 0 0 8px #000;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .socials a:hover {
+    box-shadow:
+      0 0 30px #00fff7,
+      0 0 45px #00fff7,
+      inset 0 0 12px #000;
+    transform: scale(1.2);
+  }
+  .socials img {
+    max-width: 28px;
+    max-height: 28px;
+    filter: drop-shadow(0 0 1.5px #00fff7);
+    pointer-events: none;
+    user-select: none;
+  }
+</style>
 </head>
 <body>
+  <div id="background"></div>
+
   <div class="container">
     <div class="name">Dark</div>
     <div class="bio">
-      C++ (Learning) <br />
-      Python and Java developer, <br />
+      C++ (Learning)<br/>
+      Python and Java developer,<br/>
       games: DDNet, Minecraft, Geometry Dash.
     </div>
-    <div class="counter" id="visitCount">
-      Посетителей: загрузка...
-    </div>
+    <div class="counter" id="visitCount">Посетителей: загрузка...</div>
 
     <div class="music-controls">
-      <button id="toggleMusicBtn">⏸ Остановить</button>
+      <button id="toggleMusicBtn">▶ Включить музыку</button>
       <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5" />
     </div>
 
@@ -231,38 +223,39 @@
     </div>
   </div>
 
-  <audio id="bgMusic" autoplay loop>
+  <audio id="bgMusic" loop>
     <source src="music.mp3" type="audio/mpeg" />
     Ваш браузер не поддерживает аудио.
   </audio>
 
   <script>
-    // Управление музыкой
     const music = document.getElementById('bgMusic');
     const toggleBtn = document.getElementById('toggleMusicBtn');
     const volumeSlider = document.getElementById('volumeSlider');
-
-    toggleBtn.addEventListener('click', () => {
-      if (music.paused) {
-        music.play();
-        toggleBtn.textContent = '⏸ Остановить';
-      } else {
-        music.pause();
-        toggleBtn.textContent = '▶ Включить';
-      }
-    });
-
-    volumeSlider.addEventListener('input', () => {
-      music.volume = volumeSlider.value;
-    });
-
-    // Начальная громкость
-    music.volume = volumeSlider.value;
-
-    // Счетчик посещений с локального хранилища браузера
     const visitCountElem = document.getElementById('visitCount');
     const visitsKey = 'darkBioVisitCount';
 
+    // Управление громкостью
+    volumeSlider.addEventListener('input', () => {
+      music.volume = volumeSlider.value;
+    });
+    music.volume = volumeSlider.value;
+
+    // Чтобы музыка не стартовала сама (из-за ограничений браузеров)
+    toggleBtn.addEventListener('click', () => {
+      if (music.paused) {
+        music.play().then(() => {
+          toggleBtn.textContent = '⏸ Остановить музыку';
+        }).catch(() => {
+          alert('Воспроизведение заблокировано браузером, нажмите ещё раз.');
+        });
+      } else {
+        music.pause();
+        toggleBtn.textContent = '▶ Включить музыку';
+      }
+    });
+
+    // Счётчик посещений (локально в браузере)
     function updateVisitCount() {
       let count = localStorage.getItem(visitsKey);
       if (!count) count = 0;
@@ -270,7 +263,6 @@
       localStorage.setItem(visitsKey, count);
       visitCountElem.textContent = `Посетителей: ${count}`;
     }
-
     updateVisitCount();
   </script>
 </body>
