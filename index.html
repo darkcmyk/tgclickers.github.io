@@ -16,44 +16,50 @@
     height: 100%;
     font-family: 'Roboto', sans-serif;
     background: #000;
-    color: #00fff7;
+    color: #222;
     overflow: hidden;
     position: relative;
   }
 
-  /* ФОН С GIF И БЛЮРОМ */
+  /* ФОН С GIF */
   #background {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
     background: url('gif.gif') center center / cover no-repeat fixed;
-    filter: blur(12px) brightness(0.3);
+    z-index: -3;
+  }
+
+  /* ТЁМНЫЙ БЛЮР-ОБРАБОТКА ФОНА */
+  #blurOverlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(14px);
     z-index: -2;
-    animation: pulseBlur 8s ease-in-out infinite alternate;
   }
 
-  @keyframes pulseBlur {
-    0% { filter: blur(10px) brightness(0.25); }
-    100% { filter: blur(14px) brightness(0.35); }
-  }
-
-  /* ПОМЕЩЕНИЕ КОНТЕНТА В ЦЕНТРЕ */
+  /* КОНТЕЙНЕР */
   .container {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.75);
-    backdrop-filter: saturate(180%) blur(10px);
-    border-radius: 24px;
-    padding: 30px 40px;
-    width: 320px;
+    background: rgba(25, 25, 25, 0.9);
+    border-radius: 20px;
+    padding: 40px 28px;
+    width: 240px;
+    height: 360px;
     box-shadow:
-      0 0 20px #00fff7,
-      0 0 40px #00fff7 inset;
+      0 0 20px #111 inset,
+      0 0 40px #222;
     text-align: center;
     animation: fadeSlideIn 1.5s ease forwards;
     opacity: 0;
-    color: #00fff7;
+    color: #ddd;
     user-select: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 18px;
   }
 
   @keyframes fadeSlideIn {
@@ -64,53 +70,33 @@
   /* ИМЯ */
   .name {
     font-family: 'Orbitron', sans-serif;
-    font-size: 2.6rem;
-    letter-spacing: 3px;
-    margin-bottom: 12px;
+    font-size: 2.2rem;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    color: #111;
     text-shadow:
-      0 0 10px #00fff7,
-      0 0 20px #00fff7,
-      0 0 30px #00fff7;
+      0 0 5px #000;
   }
 
   /* БИО */
   .bio {
     font-size: 1rem;
-    line-height: 1.6;
-    margin-bottom: 22px;
-    color: #7fffd4;
-    animation: fadeInText 2.5s ease forwards;
-    opacity: 0;
-  }
-  @keyframes fadeInText {
-    to {opacity: 1;}
+    line-height: 1.5;
+    color: #bbb;
+    flex-grow: 1;
   }
 
-  /* СЧЕТЧИК ПОСЕЩЕНИЙ */
+  /* СЧЁТЧИК ПОСЕЩЕНИЙ */
   .counter {
     font-family: 'Orbitron', sans-serif;
-    font-size: 1.2rem;
-    margin-bottom: 25px;
-    padding: 8px 16px;
+    font-size: 1.1rem;
+    padding: 6px 12px;
     border-radius: 14px;
-    background: rgba(0, 255, 255, 0.12);
+    background: #111;
     box-shadow:
-      0 0 15px #00fff7,
-      inset 0 0 10px #00fff7;
+      0 0 10px #222 inset;
     user-select: none;
-    animation: glowPulse 3s ease-in-out infinite alternate;
-  }
-  @keyframes glowPulse {
-    0% {
-      box-shadow:
-        0 0 15px #00fff7,
-        inset 0 0 10px #00fff7;
-    }
-    100% {
-      box-shadow:
-        0 0 35px #00fff7,
-        inset 0 0 20px #00fff7;
-    }
+    letter-spacing: 1.2px;
   }
 
   /* МУЗЫКАЛЬНЫЙ ПОЛЗУНОК И КНОПКА */
@@ -119,27 +105,26 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    margin-bottom: 28px;
   }
   .music-controls button {
-    background: transparent;
-    border: 2px solid #00fff7;
-    border-radius: 14px;
-    color: #00fff7;
+    background: #222;
+    border: 1.8px solid #444;
+    border-radius: 12px;
+    color: #bbb;
     font-size: 14px;
     padding: 7px 20px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
   .music-controls button:hover {
-    background-color: #00fff7;
-    color: #000;
+    background-color: #444;
+    color: #eee;
   }
   .music-controls input[type="range"] {
     -webkit-appearance: none;
     width: 140px;
     height: 6px;
-    background: #004040;
+    background: #333;
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -149,32 +134,31 @@
     appearance: none;
     width: 18px;
     height: 18px;
-    background: #00fff7;
+    background: #555;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow:
-      0 0 10px #00fff7;
+    box-shadow: 0 0 5px #222;
     transition: background-color 0.3s ease;
   }
   .music-controls input[type="range"]:hover {
-    background-color: #006666;
+    background-color: #555;
   }
 
   /* СОЦСЕТИ */
   .socials {
     display: flex;
     justify-content: center;
-    gap: 32px;
+    gap: 26px;
+    margin-top: 10px;
   }
   .socials a {
     display: inline-flex;
     width: 52px; height: 52px;
     border-radius: 50%;
-    border: 2.5px solid #00fff7;
+    border: 2.5px solid #222;
     box-shadow:
-      0 0 14px #00fff7,
-      inset 0 0 8px #000;
-    background-color: rgba(0, 0, 0, 0.8);
+      0 0 10px #111 inset;
+    background-color: rgba(15, 15, 15, 0.9);
     justify-content: center;
     align-items: center;
     cursor: pointer;
@@ -182,15 +166,15 @@
   }
   .socials a:hover {
     box-shadow:
-      0 0 30px #00fff7,
-      0 0 45px #00fff7,
-      inset 0 0 12px #000;
-    transform: scale(1.2);
+      0 0 20px #333,
+      0 0 25px #444,
+      inset 0 0 15px #222;
+    transform: scale(1.15);
   }
   .socials img {
     max-width: 28px;
     max-height: 28px;
-    filter: drop-shadow(0 0 1.5px #00fff7);
+    filter: drop-shadow(0 0 1px #000);
     pointer-events: none;
     user-select: none;
   }
@@ -198,6 +182,7 @@
 </head>
 <body>
   <div id="background"></div>
+  <div id="blurOverlay"></div>
 
   <div class="container">
     <div class="name">Dark</div>
@@ -235,13 +220,13 @@
     const visitCountElem = document.getElementById('visitCount');
     const visitsKey = 'darkBioVisitCount';
 
-    // Управление громкостью
+    // Громкость музыки
     volumeSlider.addEventListener('input', () => {
       music.volume = volumeSlider.value;
     });
     music.volume = volumeSlider.value;
 
-    // Чтобы музыка не стартовала сама (из-за ограничений браузеров)
+    // Кнопка включения/паузы музыки
     toggleBtn.addEventListener('click', () => {
       if (music.paused) {
         music.play().then(() => {
@@ -255,7 +240,7 @@
       }
     });
 
-    // Счётчик посещений (локально в браузере)
+    // Локальный счётчик посещений
     function updateVisitCount() {
       let count = localStorage.getItem(visitsKey);
       if (!count) count = 0;
