@@ -21,21 +21,13 @@
     position: relative;
   }
 
-  /* ФОН С GIF */
+  /* ФОН С GIF И БЛЮРОМ */
   #background {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
     background: url('gif.gif') center center / cover no-repeat fixed;
-    z-index: -3;
-  }
-
-  /* ТЁМНЫЙ БЛЮР-ОБРАБОТКА ФОНА */
-  #blurOverlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(14px);
-    z-index: -2;
+    filter: blur(14px);
+    z-index: -1;
   }
 
   /* КОНТЕЙНЕР */
@@ -60,6 +52,7 @@
     flex-direction: column;
     justify-content: center;
     gap: 18px;
+    z-index: 10;
   }
 
   @keyframes fadeSlideIn {
@@ -182,7 +175,6 @@
 </head>
 <body>
   <div id="background"></div>
-  <div id="blurOverlay"></div>
 
   <div class="container">
     <div class="name">Dark</div>
