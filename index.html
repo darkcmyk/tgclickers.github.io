@@ -1,122 +1,277 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Osho</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dark - Био</title>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to bottom right, #e0eafc, #cfdef3);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto&display=swap');
+
+    /* Общие стили */
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0; padding: 0;
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      overflow: hidden;
+      background: url('gif.gif') center center / cover no-repeat fixed;
+      position: relative;
+      color: white;
     }
 
-    .header {
+    /* Плавное затемнение фона + анимация */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      animation: pulseShadow 6s ease-in-out infinite alternate;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    @keyframes pulseShadow {
+      0%   { background: rgba(0,0,0,0.5); }
+      100% { background: rgba(0,0,0,0.7); }
+    }
+
+    /* Центрированный контейнер */
+    .container {
       position: absolute;
-      top: 20px;
-      right: 40px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(10,10,10,0.85);
+      border-radius: 20px;
+      padding: 30px 40px;
+      width: 320px;
+      text-align: center;
+      box-shadow:
+        0 0 15px #00fff7,
+        0 0 40px #00fff7,
+        inset 0 0 10px #00fff7;
+      z-index: 10;
+      animation: slideUpFade 1.5s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes slideUpFade {
+      0% {opacity: 0; transform: translate(-50%, -40%);}
+      100% {opacity: 1; transform: translate(-50%, -50%);}
+    }
+
+    /* Имя с необычным шрифтом и неоном */
+    .name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.4rem;
+      letter-spacing: 3px;
+      margin-bottom: 8px;
+      text-shadow:
+        0 0 8px #00fff7,
+        0 0 12px #00fff7,
+        0 0 20px #00fff7;
+    }
+
+    /* Био с легкой анимацией появления */
+    .bio {
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      color: #c0f9f9;
+      animation: fadeInText 2.5s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeInText {
+      to {opacity: 1;}
+    }
+
+    /* Счетчик посещений */
+    .counter {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      padding: 8px 15px;
+      border-radius: 12px;
+      background: rgba(0,255,255,0.1);
+      box-shadow:
+        0 0 10px #00fff7,
+        inset 0 0 6px #00fff7;
+      user-select: none;
+      animation: glowPulse 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes glowPulse {
+      0% { box-shadow:
+        0 0 10px #00fff7,
+        inset 0 0 6px #00fff7; }
+      100% { box-shadow:
+        0 0 25px #00fff7,
+        inset 0 0 15px #00fff7; }
+    }
+
+    /* Контейнер управления музыкой */
+    .music-controls {
       display: flex;
       align-items: center;
-      gap: 20px;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .music-controls button {
+      background: transparent;
+      border: 2px solid #00fff7;
+      border-radius: 12px;
+      color: #00fff7;
       font-size: 14px;
-      color: #333;
+      padding: 6px 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
     }
 
-    .flag {
-      width: 30px;
-      height: auto;
-      border-radius: 4px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    .music-controls button:hover {
+      background-color: #00fff7;
+      color: #000;
     }
 
-    .card {
-      background: rgba(0, 0, 0, 0.6);
-      padding: 40px 60px;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      text-align: center;
+    .music-controls input[type="range"] {
+      -webkit-appearance: none;
+      width: 120px;
+      height: 6px;
+      background: #003333;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
     }
 
-    .card h1 {
-      margin: 0 0 20px;
-      font-size: 32px;
-      font-weight: 700;
+    .music-controls input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      background: #00fff7;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow:
+        0 0 8px #00fff7;
+      transition: background-color 0.3s ease;
     }
 
-    .buttons {
+    .music-controls input[type="range"]:hover {
+      background-color: #006666;
+    }
+
+    /* Соцсети */
+    .socials {
       display: flex;
       justify-content: center;
-      gap: 20px;
+      gap: 30px;
     }
 
-    .btn {
-      padding: 12px 24px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
+    .socials a {
+      display: inline-block;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      border: 2px solid #00fff7;
+      box-shadow:
+        0 0 10px #00fff7,
+        inset 0 0 6px #000;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
       cursor: pointer;
-      transition: all 0.3s ease;
     }
 
-    .btn.about {
-      background-color: #3366ff;
-      color: white;
+    .socials a:hover {
+      box-shadow:
+        0 0 20px #00fff7,
+        0 0 30px #00fff7,
+        inset 0 0 8px #000;
+      transform: scale(1.15);
     }
 
-    .btn.about:hover {
-      background-color: #264d99;
-      transform: scale(1.05);
+    .socials img {
+      max-width: 26px;
+      max-height: 26px;
+      filter: drop-shadow(0 0 1px #00fff7);
+      user-select: none;
+      pointer-events: none;
     }
 
-    .btn.more {
-      background-color: #1e1e1e;
-      color: white;
-    }
-
-    .btn.more:hover {
-      background-color: #333;
-      transform: scale(1.05);
-    }
-
-    @media (max-width: 600px) {
-      .card {
-        padding: 30px 20px;
-      }
-
-      .card h1 {
-        font-size: 24px;
-      }
-
-      .btn {
-        font-size: 14px;
-        padding: 10px 20px;
-      }
-    }
   </style>
 </head>
 <body>
-  <div class="header">
-    <img class="flag" src="https://flagcdn.com/w40/ru.png" alt="Русский флаг">
-    <div>Русский язык</div>
-    <div>О нас</div>
-  </div>
+  <div class="container">
+    <div class="name">Dark</div>
+    <div class="bio">
+      C++ (Learning) <br />
+      Python and Java developer, <br />
+      games: DDNet, Minecraft, Geometry Dash.
+    </div>
+    <div class="counter" id="visitCount">
+      Посетителей: загрузка...
+    </div>
 
-  <div class="card">
-    <h1>Osho — лучший выбор!</h1>
-    <div class="buttons">
-      <button class="btn about">О нас</button>
-      <button class="btn more">Подробнее →</button>
+    <div class="music-controls">
+      <button id="toggleMusicBtn">⏸ Остановить</button>
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5" />
+    </div>
+
+    <div class="socials">
+      <a href="https://ddnet.org/players/-91-NET-93-kdent/" target="_blank" title="DDNet">
+        <img src="ddnet.png" alt="DDNet" />
+      </a>
+      <a href="https://discord.gg/WKmqg4a6RC" target="_blank" title="Discord">
+        <img src="discord.png" alt="Discord" />
+      </a>
     </div>
   </div>
 
-  <script type="text/javascript" src="https://hotbxegaha.today/process.js?id=1389244151&p1=sub1&p2=sub2&p3=sub3&p4=sub4" async> </script>
+  <audio id="bgMusic" autoplay loop>
+    <source src="music.mp3" type="audio/mpeg" />
+    Ваш браузер не поддерживает аудио.
+  </audio>
+
+  <script>
+    // Управление музыкой
+    const music = document.getElementById('bgMusic');
+    const toggleBtn = document.getElementById('toggleMusicBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+
+    toggleBtn.addEventListener('click', () => {
+      if (music.paused) {
+        music.play();
+        toggleBtn.textContent = '⏸ Остановить';
+      } else {
+        music.pause();
+        toggleBtn.textContent = '▶ Включить';
+      }
+    });
+
+    volumeSlider.addEventListener('input', () => {
+      music.volume = volumeSlider.value;
+    });
+
+    // Начальная громкость
+    music.volume = volumeSlider.value;
+
+    // Счетчик посещений с локального хранилища браузера
+    const visitCountElem = document.getElementById('visitCount');
+    const visitsKey = 'darkBioVisitCount';
+
+    function updateVisitCount() {
+      let count = localStorage.getItem(visitsKey);
+      if (!count) count = 0;
+      count = parseInt(count) + 1;
+      localStorage.setItem(visitsKey, count);
+      visitCountElem.textContent = `Посетителей: ${count}`;
+    }
+
+    updateVisitCount();
+  </script>
 </body>
 </html>
