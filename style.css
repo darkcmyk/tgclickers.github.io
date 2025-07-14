@@ -1,1 +1,43 @@
+body {
+  background-image: url('https://images.unsplash.com/photo-1618221341796-3fa0480e8c9a');
+  background-size: cover;
+  background-position: center;
+  font-family: 'Arial', sans-serif;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
+.container {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  width: 350px;
+}
+
+input, button {
+  margin-top: 10px;
+  padding: 12px;
+  width: 90%;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+}
+
+button {
+  background-color: gold;
+  color: black;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: orange;
+}
+
+#result {
+  margin-top: 20px;
+  font-weight: bold;
+}
