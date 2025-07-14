@@ -8,36 +8,88 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  margin: 0;
 }
 
 .container {
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 40px;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 30px;
   border-radius: 20px;
-  text-align: center;
   width: 350px;
+  text-align: center;
 }
 
-input, button {
-  margin-top: 10px;
-  padding: 12px;
+input {
   width: 90%;
+  padding: 10px;
+  margin: 8px 0;
   border-radius: 10px;
   border: none;
   font-size: 16px;
 }
 
 button {
+  width: 95%;
+  padding: 12px;
+  margin-top: 12px;
+  border: none;
+  border-radius: 12px;
   background-color: gold;
   color: black;
+  font-weight: bold;
   cursor: pointer;
+  font-size: 18px;
 }
 
 button:hover {
   background-color: orange;
 }
 
-#result {
-  margin-top: 20px;
+.telegram-msg {
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.tab-buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.tab-buttons button {
+  flex: 1;
+  margin: 0 5px;
+  background-color: #222;
+  color: white;
+  font-weight: normal;
+  border-radius: 12px;
+  padding: 10px 0;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.tab-buttons button.active {
+  background-color: gold;
+  color: black;
   font-weight: bold;
+}
+
+.tab {
+  display: none;
+}
+
+.tab.active {
+  display: block;
+}
+
+#auth-message {
+  margin-top: 15px;
+  font-weight: bold;
+  height: 24px;
+}
+
+#casino-section button {
+  margin-top: 30px;
 }
