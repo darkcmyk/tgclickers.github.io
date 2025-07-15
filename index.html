@@ -2,192 +2,68 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>CASINO GAG</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #e0ffe0; padding: 20px; }
-    #casino-section { display: none; }
-    .message { margin-top: 10px; }
-    button { margin-top: 10px; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CASINO GAG - Вход</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <h1>CASINO GAG</h1>
-
-  <p>Чтобы передать фрукт/пет вам надо отписать в телеграм: <b>@blacklame</b></p>
-  <p>Вывод идет через телеграмм <b>@blacklame</b></p>
-  <p>Не пытайтесь нас обмануть, при поытке обмана мы не делаем гарант! Все отслеживаеться и модерируеться, телеграмм <b>@blacklame</b></p>
+<div class="container">
+  <h1>🎰 CASINO GAG</h1>
+  <p class="telegram-msg">
+    Чтобы передать фрукт/пета вам надо отписать в телеграм: 
+    <a href="https://t.me/swagablack" target="_blank">@swagablack</a>
+  </p>
 
   <div id="auth-section">
-    <h2>Регистрация</h2>
-    <input id="reg-username" placeholder="Ник" /><br />
-    <input id="reg-password" type="password" placeholder="Пароль" /><br />
-    <button onclick="register()">Зарегистрироваться</button>
-    <div id="reg-message" class="message"></div>
+    <div class="tab-buttons">
+      <button id="btn-login" class="active" onclick="showTab('login')">Вход</button>
+      <button id="btn-register" onclick="showTab('register')">Регистрация</button>
+    </div>
 
-    <h2>Вход</h2>
-    <input id="login-username" placeholder="Ник" /><br />
-    <input id="login-password" type="password" placeholder="Пароль" /><br />
-    <button onclick="login()">Войти</button>
-    <div id="login-message" class="message"></div>
+    <div id="login" class="tab active">
+      <input type="text" id="login-username" placeholder="Ник Roblox" />
+      <input type="password" id="login-password" placeholder="Пароль" />
+      <button onclick="login()">Войти</button>
+    </div>
+
+    <div id="register" class="tab">
+      <input type="text" id="reg-username" placeholder="Ник Roblox" />
+      <input type="password" id="reg-password" placeholder="Пароль" />
+      <button onclick="register()">Зарегистрироваться</button>
+    </div>
+
+    <p id="auth-message"></p>
   </div>
 
-  <div id="casino-section">
-    <h2>Добро пожаловать, <span id="user-name"></span></h2>
-    <p>Баланс шекелей: <span id="user-shkels"></span></p>
-    <p id="access-message" style="color:red;"></p>
-    <button onclick="logout()">Выйти</button>
+  <div id="casino-section" style="display:none;">
+    <h2>Добро пожаловать, <span id="user-name"></span>!</h2>
+    <p>Баланс: <span id="user-shkels"></span> шекелей</p>
+    <p id="access-message"></p>
 
-    <h3>Игра "Угадай число от 1 до 10"</h3>
-    <input type="number" id="guess-number" placeholder="Число (1-10)" min="1" max="10" />
-    <input type="number" id="guess-bet" placeholder="Ставка (мин. 1 000 000)" />
-    <button onclick="playGuess()">Играть</button>
-    <div id="guess-result" class="message"></div>
+    <h3>Угадай число (1–10)</h3>
+    <p>Минимальная ставка: 1 000 000 шекелей</p>
+    <input type="number" id="guess-number" min="1" max="10" placeholder="Введите число 1-10" />
+    <input type="number" id="guess-bet" min="1000000" placeholder="Ставка (≥ 1,000,000)" />
+    <button onclick="playGuess()">Сделать ставку</button>
+    <p id="guess-result" style="margin-top: 15px; font-weight: bold;"></p>
+
+    <h3>Блэкджек</h3>
+    <p>Набери больше, чем дилер (не больше 21)</p>
+    <input type="number" id="bj-bet" min="1000000" placeholder="Ставка (≥ 1,000,000)" />
+    <button onclick="playBlackjack()">Играть в Блэкджек</button>
+    <p id="bj-result" style="margin-top: 15px; font-weight: bold;"></p>
+
+    <button onclick="logout()" style="margin-top:30px;">Выйти</button>
+
+    <hr />
+    <p style="font-size: 13px; color: #ccc; margin-top: 20px;">
+      Вывод идет через телеграм: 
+      <a href="https://t.me/swagablack" target="_blank">@swagablack</a>
+    </p>
   </div>
+</div>
 
-<script>
-  const BACKEND_URL = 'https://5ecf2cd5-b718-4734-aba6-2259aa598570-00-3s7c11zdialc7.pike.replit.dev/'; // замени на свой URL
-
-  let currentUser = null;
-  let userBalance = 0;
-
-  async function register() {
-    const username = document.getElementById('reg-username').value.trim();
-    const password = document.getElementById('reg-password').value;
-
-    const messageDiv = document.getElementById('reg-message');
-    messageDiv.style.color = 'red';
-
-    if (!username || !password) {
-      messageDiv.innerText = 'Введите ник и пароль';
-      return;
-    }
-
-    try {
-      const res = await fetch(BACKEND_URL + '/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-      const data = await res.json();
-
-      if (res.ok) {
-        messageDiv.style.color = 'green';
-        messageDiv.innerText = 'Регистрация успешна! Войдите.';
-      } else {
-        messageDiv.innerText = data.error || 'Ошибка регистрации';
-      }
-    } catch {
-      messageDiv.innerText = 'Ошибка сервера';
-    }
-  }
-
-  async function login() {
-    const username = document.getElementById('login-username').value.trim();
-    const password = document.getElementById('login-password').value;
-
-    const messageDiv = document.getElementById('login-message');
-    messageDiv.style.color = 'red';
-
-    if (!username || !password) {
-      messageDiv.innerText = 'Введите ник и пароль';
-      return;
-    }
-
-    try {
-      const res = await fetch(BACKEND_URL + '/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-      const data = await res.json();
-
-      if (res.ok) {
-        currentUser = data.username;
-        userBalance = data.shkels;
-
-        document.getElementById('user-name').innerText = currentUser;
-        document.getElementById('user-shkels').innerText = userBalance;
-        document.getElementById('auth-section').style.display = 'none';
-        document.getElementById('casino-section').style.display = 'block';
-
-        const canPlay = data.canPlay;
-        document.getElementById('access-message').innerText = canPlay
-          ? ''
-          : 'Минимум 1 000 000 шекелей для игры в казино';
-
-        messageDiv.innerText = '';
-      } else {
-        messageDiv.innerText = data.error || 'Ошибка входа';
-      }
-    } catch {
-      messageDiv.innerText = 'Ошибка сервера';
-    }
-  }
-
-  async function playGuess() {
-    const guessInput = document.getElementById('guess-number');
-    const betInput = document.getElementById('guess-bet');
-    const resultP = document.getElementById('guess-result');
-
-    const guess = Number(guessInput.value);
-    const bet = Number(betInput.value);
-
-    if (!guess || guess < 1 || guess > 10) {
-      resultP.style.color = 'red';
-      resultP.innerText = 'Введите число от 1 до 10!';
-      return;
-    }
-    if (!bet || bet < 1000000) {
-      resultP.style.color = 'red';
-      resultP.innerText = 'Минимальная ставка — 1 000 000 шекелей!';
-      return;
-    }
-    if (bet > userBalance) {
-      resultP.style.color = 'red';
-      resultP.innerText = 'Недостаточно шекелей для ставки!';
-      return;
-    }
-
-    try {
-      const res = await fetch(BACKEND_URL + '/playGuess', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: currentUser, bet, guess }),
-      });
-      const data = await res.json();
-
-      if (res.ok) {
-        userBalance = data.shkels;
-        document.getElementById('user-shkels').innerText = userBalance;
-
-        resultP.style.color = data.won ? 'green' : 'orange';
-        resultP.innerText = data.message;
-      } else {
-        resultP.style.color = 'red';
-        resultP.innerText = data.error || 'Ошибка игры';
-      }
-    } catch {
-      resultP.style.color = 'red';
-      resultP.innerText = 'Ошибка сервера';
-    }
-
-    guessInput.value = '';
-    betInput.value = '';
-  }
-
-  function logout() {
-    currentUser = null;
-    userBalance = 0;
-    document.getElementById('auth-section').style.display = 'block';
-    document.getElementById('casino-section').style.display = 'none';
-
-    document.getElementById('login-username').value = '';
-    document.getElementById('login-password').value = '';
-    document.getElementById('login-message').innerText = '';
-    document.getElementById('guess-result').innerText = '';
-  }
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
