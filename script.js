@@ -1,4 +1,4 @@
-const BACKEND_URL = 'https://5ecf2cd5-b718-4734-aba6-2259aa598570-00-3s7c11zdialc7.pike.replit.dev'; // Заменить на твой сервер
+const BACKEND_URL = 'https://5ecf2cd5-b718-4734-aba6-2259aa598570-00-3s7c11zdialc7.pike.replit.dev';
 
 const authMessage = document.getElementById('auth-message');
 
@@ -143,6 +143,49 @@ async function playGuess() {
   betInput.value = '';
 }
 
+async function playBlackjack() {
+  const betInput = document.getElementById('bj-bet');
+  const resultP = document.getElementById('bj-result');
+
+  const bet = Number(betInput.value);
+  if (!bet || bet < 1000000) {
+    resultP.style.color = 'red';
+    resultP.innerText = 'Минимальная ставка — 1 000 000 шекелей!';
+    return;
+  }
+  if (bet > userBalance) {
+    resultP.style.color = 'red';
+    resultP.innerText = 'Недостаточно шекелей для ставки!';
+    return;
+  }
+
+  try {
+    const res = await fetch(BACKEND_URL + '/playBlackjack', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: currentUser, bet }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      userBalance = data.shkels;
+      document.getElementById('user-shkels').innerText = userBalance;
+
+      resultP.style.color = data.won ? 'lightgreen' : 'orange';
+      resultP.innerText = data.message;
+    } else {
+      resultP.style.color = 'red';
+      resultP.innerText = data.error || 'Ошибка игры';
+    }
+  } catch {
+    resultP.style.color = 'red';
+    resultP.innerText = 'Ошибка сервера';
+  }
+
+  betInput.value = '';
+}
+
 function logout() {
   currentUser = null;
   userBalance = 0;
@@ -153,4 +196,5 @@ function logout() {
   document.getElementById('login-password').value = '';
   authMessage.innerText = '';
   document.getElementById('guess-result').innerText = '';
+  document.getElementById('bj-result').innerText = '';
 }
