@@ -2,68 +2,94 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CASINO GAG - Вход</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>blackkent</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      background: url('gif.gif') no-repeat center center fixed;
+      background-size: cover;
+      backdrop-filter: blur(3px);
+    }
+
+    .overlay {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 30px;
+      max-width: 600px;
+      margin: 40px auto;
+      border: 2px solid #ff0044;
+      border-radius: 20px;
+      box-shadow: 0 0 25px #ff0044;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .top-bar img {
+      width: 24px;
+      height: 24px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5em;
+      color: #ff0044;
+      margin-bottom: 10px;
+    }
+
+    .description {
+      font-size: 1.1em;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .player {
+      margin-top: 30px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    audio {
+      width: 100%;
+      outline: none;
+    }
+
+    .player-label {
+      color: #aaa;
+      font-size: 0.9em;
+    }
+  </style>
 </head>
 <body>
-
-<div class="container">
-  <h1>🎰 CASINO GAG</h1>
-  <p class="telegram-msg">
-    Чтобы передать фрукт/пета вам надо отписать в телеграм: 
-    <a href="https://t.me/swagablack" target="_blank">@swagablack</a>
-  </p>
-
-  <div id="auth-section">
-    <div class="tab-buttons">
-      <button id="btn-login" class="active" onclick="showTab('login')">Вход</button>
-      <button id="btn-register" onclick="showTab('register')">Регистрация</button>
+  <div class="overlay">
+    <div class="top-bar">
+      <span>Русский</span>
+      <img src="russia-flag.png" alt="Russia Flag" />
     </div>
 
-    <div id="login" class="tab active">
-      <input type="text" id="login-username" placeholder="Ник Roblox" />
-      <input type="password" id="login-password" placeholder="Пароль" />
-      <button onclick="login()">Войти</button>
+    <h1>blackkent</h1>
+
+    <div class="description">
+      C++ (learning), Java, JS, HTML, Python.
+      Game: Minecraft (Nursultan, Catlavan)
+      DDNet (krxclient crack ultimate)
+      Geometry Dash (Megahack Pro)
+      After Effects (Creating motion effects, edits, and more).
+      For fun :)
     </div>
 
-    <div id="register" class="tab">
-      <input type="text" id="reg-username" placeholder="Ник Roblox" />
-      <input type="password" id="reg-password" placeholder="Пароль" />
-      <button onclick="register()">Зарегистрироваться</button>
+    <div class="player">
+      <audio controls autoplay loop>
+        <source src="music.mp3" type="audio/mpeg">
+        Your browser does not support the audio tag.
+      </audio>
     </div>
-
-    <p id="auth-message"></p>
   </div>
-
-  <div id="casino-section" style="display:none;">
-    <h2>Добро пожаловать, <span id="user-name"></span>!</h2>
-    <p>Баланс: <span id="user-shkels"></span> шекелей</p>
-    <p id="access-message"></p>
-
-    <h3>Угадай число (1–10)</h3>
-    <p>Минимальная ставка: 1 000 000 шекелей</p>
-    <input type="number" id="guess-number" min="1" max="10" placeholder="Введите число 1-10" />
-    <input type="number" id="guess-bet" min="1000000" placeholder="Ставка (≥ 1,000,000)" />
-    <button onclick="playGuess()">Сделать ставку</button>
-    <p id="guess-result" style="margin-top: 15px; font-weight: bold;"></p>
-
-    <h3>Блэкджек</h3>
-    <p>Набери больше, чем дилер (не больше 21)</p>
-    <input type="number" id="bj-bet" min="1000000" placeholder="Ставка (≥ 1,000,000)" />
-    <button onclick="playBlackjack()">Играть в Блэкджек</button>
-    <p id="bj-result" style="margin-top: 15px; font-weight: bold;"></p>
-
-    <button onclick="logout()" style="margin-top:30px;">Выйти</button>
-
-    <hr />
-    <p style="font-size: 13px; color: #ccc; margin-top: 20px;">
-      Вывод идет через телеграм: 
-      <a href="https://t.me/swagablack" target="_blank">@swagablack</a>
-    </p>
-  </div>
-</div>
-
-<script src="script.js"></script>
 </body>
 </html>
