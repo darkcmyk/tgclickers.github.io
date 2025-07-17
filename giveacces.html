@@ -19,7 +19,7 @@
     async function grantAccess() {
       const telegramId = document.getElementById("telegramId").value;
       const password = document.getElementById("password").value;
-      const response = await fetch("https://5ecf2cd5-b718-4734-aba6-2259aa598570-00-3s7c11zdialc7.pike.replit.dev/", {
+      const response = await fetch("https://5ecf2cd5-b718-4734-aba6-2259aa598570-00-3s7c11zdialc7.pike.replit.dev/grant-access", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password, telegramId })
