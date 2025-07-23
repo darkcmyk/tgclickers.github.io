@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Авторизация через Discord</title>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    const clientId = "906537656555565106";
+    const redirectUri = encodeURIComponent("https://gastworld-big-mc.ru/giveaway/callback.html");
+
+    window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=identify&state=${id}`;
+  </script>
+</head>
+<body></body>
+</html>
