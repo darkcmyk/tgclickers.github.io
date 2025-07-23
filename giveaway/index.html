@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Giveaway</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1 id="title">Giveaway</h1>
+    <div id="giveaway-box"></div>
+  </div>
+  <script>
+    async function main() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+
+      if (!localStorage.getItem("user")) {
+        window.location.href = `/giveaway/discord.html?id=${id}`;
+        return;
+      }
+
+      const user = JSON.parse(localStorage.getItem("user"));
+      const res = await fetch(`https://5ecf2cd5-b718-4734-aba6-2259aa598570-00-3s7c11zdialc7.pike.replit.dev/api/giveaway/${id}`);
+      const data = await res.json();
+
+      if (!data || !data.word) {
+        document.getElementById("giveaway-box").innerHTML = "<p>Giveaway не найден или уже завершён.</p>";
+        return;
+      }
+
+      const box = document.getElementById("giveaway-box");
+      box.innerHTML = `
+        <p><strong>${data.name}</strong></p>
+        <p>${data.description}</p>
+        <input type="text" placeholder="Введите слово..." id="guess" />
+        <button onclick="submit()">Отправить</button>
+      `;
+
+      window.submit = async function () {
+        const input = document.getElementById("guess").value.trim();
+        const res = await fetch(`https://5ecf2cd5-b718-4734-aba6-2259aa598570-00-3s7c11zdialc7.pike.replit.dev/api/guess/${id}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user, guess: input })
+        });
+        const resp = await res.text();
+        box.innerHTML = `<p>${resp}</p>`;
+      }
+    }
+
+    main();
+  </script>
+</body>
+</html>
