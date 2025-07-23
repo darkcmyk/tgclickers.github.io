@@ -2,38 +2,39 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Guess the Word</title>
+  <title>Угадай слово</title>
   <link rel="stylesheet" href="common.css">
 </head>
 <body>
   <div class="container">
-    <h2>Угадай слово 🎯</h2>
-    <input id="guessInput" placeholder="Введите слово..." autocomplete="off" />
-    <br><br>
-    <button class="button" onclick="submitGuess()">Submit</button>
+    <h1 id="title">Игра</h1>
+    <p id="desc">Описание...</p>
+    <input id="guessInput" placeholder="Введите слово">
+    <button onclick="submitGuess()">Угадать</button>
     <p id="result"></p>
   </div>
+
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const gameId = params.get("id");
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) {
-      window.location.href = `login.html?state=${gameId}`;
+    const id = new URLSearchParams(location.search).get("id");
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    if (!user.id) {
+      location.href = `https://discord.com/oauth2/authorize?client_id=906537656555565106&redirect_uri=https://gastworld-big-mc.ru/giveaway/callback.html&response_type=code&scope=identify&state=${id}`;
     }
 
     async function submitGuess() {
-      const guess = document.getElementById("guessInput").value.trim();
-      if (!guess) return;
+      const guess = document.getElementById("guessInput").value;
       const res = await fetch("https://5ecf2cd5-b718-4734-aba6-2259aa598570-00-3s7c11zdialc7.pike.replit.dev/guess", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: gameId, userId: user.id, username: user.username, guess })
+        body: JSON.stringify({ id, guess, userId: user.id, username: user.username + "#" + user.discriminator })
       });
-      const d = await res.json();
-      document.getElementById("result").textContent =
-        d.status === "correct" ? "✅ Угадал!" :
-        d.status === "already_won" ? "⚠️ Уже выигрывал" :
-        "❌ Попробуй ещё";
+      const data = await res.json();
+      document.getElementById("result").textContent = {
+        correct: "🎉 Правильно! Вы победили!",
+        wrong: "❌ Неверно, попробуйте еще.",
+        already_won: "✅ Вы уже выигрывали."
+      }[data.status] || "Ошибка.";
     }
   </script>
 </body>
