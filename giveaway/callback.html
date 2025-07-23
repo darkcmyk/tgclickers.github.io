@@ -8,20 +8,17 @@
 <body>
   <div class="container"><h2>Авторизация...</h2></div>
   <script>
-    const code = new URLSearchParams(window.location.search).get("code");
-    const state = new URLSearchParams(window.location.search).get("state");
-    if (!code) {
-      document.body.innerHTML = "<p>Ошибка авторизации.</p>";
-    } else {
+    const code = new URLSearchParams(location.search).get("code");
+    const state = new URLSearchParams(location.search).get("state");
+    if (!code) document.body.innerHTML = "<p>Ошибка авторизации.</p>";
+    else {
       fetch(`https://5ecf2cd5-b718-4734-aba6-2259aa598570-00-3s7c11zdialc7.pike.replit.dev/auth/discord?code=${code}`)
         .then(r => r.json())
         .then(d => {
           if (d.user) {
             localStorage.setItem("user", JSON.stringify(d.user));
-            window.location.href = `giveaway.html?id=${state}`;
-          } else {
-            document.body.innerHTML = "<p>Ошибка, попробуйте снова.</p>";
-          }
+            location.href = `giveaway.html?id=${state}`;
+          } else document.body.innerHTML = "<p>Ошибка, попробуйте снова.</p>";
         })
         .catch(() => document.body.innerHTML = "<p>Ошибка сети.</p>");
     }
