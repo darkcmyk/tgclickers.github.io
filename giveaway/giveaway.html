@@ -2,39 +2,30 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Угадай слово</title>
+  <title>Guess the Word</title>
   <link rel="stylesheet" href="common.css">
 </head>
 <body>
   <div class="container">
-    <h1 id="title">Игра</h1>
-    <p id="desc">Описание...</p>
-    <input id="guessInput" placeholder="Введите слово">
-    <button onclick="submitGuess()">Угадать</button>
-    <p id="result"></p>
+    <h1>Угадай слово</h1>
+    <input id="word" placeholder="Введите слово">
+    <button onclick="submit()">Отправить</button>
+    <p id="msg"></p>
   </div>
-
   <script>
     const id = new URLSearchParams(location.search).get("id");
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-
-    if (!user.id) {
-      location.href = `https://discord.com/oauth2/authorize?client_id=906537656555565106&redirect_uri=https://gastworld-big-mc.ru/giveaway/callback.html&response_type=code&scope=identify&state=${id}`;
-    }
-
-    async function submitGuess() {
-      const guess = document.getElementById("guessInput").value;
-      const res = await fetch("https://5ecf2cd5-b718-4734-aba6-2259aa598570-00-3s7c11zdialc7.pike.replit.dev/guess", {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) location.href = `https://discord.com/oauth2/authorize?client_id=906537656555565106&redirect_uri=https%3A%2F%2Fgastworld-big-mc.ru%2Fgiveaway%2Fcallback.html&response_type=code&scope=identify&state=${id}`;
+    function submit() {
+      const word = document.getElementById("word").value;
+      fetch("https://5ecf2cd5-b718-4734-aba6-2259aa598570-00-3s7c11zdialc7.pike.replit.dev/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, guess, userId: user.id, username: user.username + "#" + user.discriminator })
-      });
-      const data = await res.json();
-      document.getElementById("result").textContent = {
-        correct: "🎉 Правильно! Вы победили!",
-        wrong: "❌ Неверно, попробуйте еще.",
-        already_won: "✅ Вы уже выигрывали."
-      }[data.status] || "Ошибка.";
+        body: JSON.stringify({ word, id, user })
+      })
+        .then(r => r.text())
+        .then(msg => document.getElementById("msg").textContent = msg)
+        .catch(() => document.getElementById("msg").textContent = "Ошибка сети");
     }
   </script>
 </body>
