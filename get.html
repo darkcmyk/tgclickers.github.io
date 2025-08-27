@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DarkHub</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body {
+  margin:0;
+  font-family:'Roboto',sans-serif;
+  background:#000;
+  color:#fff;
+  overflow:hidden;
+}
+canvas#bg {
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  z-index:-1;
+}
+header {
+  position:fixed;top:0;left:0;width:100%;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:25px;height:80px;
+  background:rgba(0,0,30,0.7);
+  backdrop-filter:blur(8px);
+  box-shadow:0 0 30px rgba(0,150,255,0.7);
+  z-index:1000;
+  animation:slideDown 1s ease;
+}
+@keyframes slideDown {from{transform:translateY(-100%);}to{transform:translateY(0);}}
+header h1 {
+  font-size:32px;color:#00f;
+  text-shadow:0 0 10px #00f,0 0 20px #33f,0 0 40px #0ff;
+  animation:glitch 2s infinite alternate;
+}
+@keyframes glitch {
+  0%{text-shadow:2px 2px #00f,-2px -2px #0ff;}
+  50%{text-shadow:-2px 2px #0ff,2px -2px #00f;}
+  100%{text-shadow:2px -2px #00f,-2px 2px #0ff;}
+}
+nav a {
+  color:#fff;text-decoration:none;margin:0 10px;
+  font-weight:bold;position:relative;font-size:18px;
+}
+nav a:after {
+  content:'';position:absolute;left:0;bottom:-4px;width:0;height:2px;background:#00f;transition:.3s;
+}
+nav a:hover:after {width:100%;}
+.main {
+  padding-top:220px;display:flex;flex-direction:column;align-items:center;min-height:100vh;animation:fadeIn 1.5s ease;
+}
+@keyframes fadeIn {from{opacity:0;}to{opacity:1;}}
+.card {
+  background:rgba(0,0,50,0.8);
+  border-radius:20px;
+  padding:20px;text-align:center;
+  box-shadow:0 0 25px rgba(0,150,255,0.5);
+  transition:transform .5s,box-shadow .5s;
+  cursor:pointer;
+  animation:float 3s infinite ease-in-out, glow 2s infinite alternate;
+}
+@keyframes float {0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@keyframes glow {0%{box-shadow:0 0 15px #00f;}100%{box-shadow:0 0 40px #0ff;}}
+.card:hover {transform:scale(1.08);}
+.card img {max-width:300px;border-radius:10px;filter:blur(2px);transition:.5s;}
+.card img:hover {filter:blur(0);}
+button {
+  background:linear-gradient(90deg,#00f,#0055ff);
+  border:none;padding:12px 24px;margin-top:15px;
+  border-radius:12px;cursor:pointer;font-weight:bold;color:#fff;
+  box-shadow:0 0 10px #00f;transition:.3s;position:relative;overflow:hidden;
+}
+button:hover {box-shadow:0 0 20px #00f,0 0 40px #0ff;transform:scale(1.05);}
+button:after {
+  content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:rgba(255,255,255,0.2);transform:skewX(-20deg);transition:.5s;
+}
+button:hover:after {left:100%;}
+#details {display:none;flex-direction:column;align-items:center;animation:fadeIn 1s ease;}
+.injector {
+  background:#001; padding:15px; margin:15px; border-radius:15px;
+  font-family:monospace; color:#0ff; user-select:none;
+  box-shadow:inset 0 0 10px #00f; position:relative;
+}
+.injector:after {content:'|'; position:absolute; right:5px; animation:blink 1s infinite; color:#0ff;}
+@keyframes blink {0%,50%{opacity:1;}50.01%,100%{opacity:0;}}
+.toast {
+  position:fixed;bottom:20px;right:20px;
+  background:#00f;color:#fff;padding:10px 20px;
+  border-radius:10px;display:none;box-shadow:0 0 20px #00f;
+  animation:slideUp .5s ease;
+}
+@keyframes slideUp {from{transform:translateY(50px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.loader {position:fixed;top:0;left:0;width:100%;height:100%;
+  background:#000;display:flex;justify-content:center;align-items:center;
+  font-size:40px;color:#0ff;z-index:9999;flex-direction:column;}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="loader" id="loader"><div id="loaderText"></div></div>
+<header>
+<h1>DARKHUB</h1>
+<nav>
+<a href="#" id="scriptsLink">All scripts</a>
+<a href="https://discord.gg/DHTevEze" target="_blank">Support</a>
+</nav>
+</header>
+<main class="main" id="mainContent">
+  <div class="card" id="card">
+    <img src="https://i.ibb.co/8DhkJYHt/brainrot.jpg">
+    <h2>Steal A Brainrot</h2>
+    <p>The great script for steal a brainrot</p>
+    <button id="getBtn">Get</button>
+  </div>
+  <div id="details">
+    <img src="https://i.ibb.co/8DhkJYHt/brainrot.jpg" style="max-width:300px;border-radius:10px;">
+    <h2>Steal A Brainrot</h2>
+    <p>The great script for steal a brainrot</p>
+    <div class="injector" id="injector">loadstring(game:HttpGet("https://pastebin.com/raw/QMwqB55E"))()</div>
+    <button id="copyBtn">Copy</button>
+    <button id="backBtn">Back to scripts</button>
+  </div>
+</main>
+<div class="toast" id="toast">Copied!</div>
+<script>
+const loader=document.getElementById('loader');
+const loaderText=document.getElementById('loaderText');
+const texts=['L','Lo','Loa','Load','Load.','Load..','Load...'];
+let idx=0;
+setInterval(()=>{loaderText.textContent=texts[idx++];if(idx===texts.length)idx=0;},300);
+setTimeout(()=>{loader.style.display='none';},Math.random()*(5200-2300)+2300);
+const getBtn=document.getElementById('getBtn');
+const backBtn=document.getElementById('backBtn');
+const card=document.getElementById('card');
+const details=document.getElementById('details');
+getBtn.onclick=()=>{card.style.display='none';details.style.display='flex';};
+backBtn.onclick=()=>{details.style.display='none';card.style.display='block';};
+const copyBtn=document.getElementById('copyBtn');
+const injector=document.getElementById('injector');
+const toast=document.getElementById('toast');
+copyBtn.onclick=async()=>{let text=injector.textContent;try{await navigator.clipboard.writeText(text);}catch(e){let t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);}toast.style.display='block';setTimeout(()=>toast.style.display='none',2000);};
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{
+if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key.toUpperCase()))||(e.ctrlKey&&e.key.toUpperCase()==='U')){
+e.preventDefault();alert('Access Denied');window.location.reload();}
+});
+(function(){let element=new Image();Object.defineProperty(element,'id',{get:function(){alert('Access Denied');window.location.reload();}});console.log(element);})();
+const canvas=document.getElementById('bg');const ctx=canvas.getContext('2d');
+let w,h;function resize(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight;}
+window.addEventListener('resize',resize);resize();
+let t=0;function draw(){ctx.clearRect(0,0,w,h);ctx.fillStyle='#000';ctx.fillRect(0,0,w,h);
+for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(0,h/2);
+for(let x=0;x<=w;x+=10){ctx.lineTo(x,h/2+Math.sin(x*0.01+t+i)*50);}
+ctx.strokeStyle=`rgba(0,150,255,0.3)`;ctx.lineWidth=2;ctx.stroke();}
+t+=0.02;requestAnimationFrame(draw);}draw();
+document.addEventListener('mousemove',e=>{
+const x=(e.clientX/window.innerWidth-0.5)*20;
+const y=(e.clientY/window.innerHeight-0.5)*20;
+document.querySelector('.card').style.transform=`translate(${x}px,${y}px) scale(1.05)`;
+});
+</script>
+</body>
+</html>
