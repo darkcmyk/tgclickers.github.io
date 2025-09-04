@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DarkHub</title>
@@ -11,156 +9,363 @@ body {
   font-family:'Roboto',sans-serif;
   background:#000;
   color:#fff;
-  overflow:hidden;
+  scroll-behavior:smooth;
 }
 canvas#bg {
-  position:fixed;
-  top:0;left:0;
+  position:fixed;top:0;left:0;
   width:100%;height:100%;
   z-index:-1;
 }
 header {
   position:fixed;top:0;left:0;width:100%;
   display:flex;justify-content:space-between;align-items:center;
-  padding:25px;height:80px;
-  background:rgba(0,0,30,0.7);
+  padding:20px;height:70px;
+  background:rgba(0,0,0,0.8);
   backdrop-filter:blur(8px);
-  box-shadow:0 0 30px rgba(0,150,255,0.7);
+  border-bottom:1px solid #fff;
   z-index:1000;
-  animation:slideDown 1s ease;
+  transform:scale(0.8);
+  opacity:0;
+  transition:all 0.6s ease;
 }
-@keyframes slideDown {from{transform:translateY(-100%);}to{transform:translateY(0);}}
+header.show {
+  transform:scale(1);
+  opacity:1;
+}
 header h1 {
-  font-size:32px;color:#00f;
-  text-shadow:0 0 10px #00f,0 0 20px #33f,0 0 40px #0ff;
-  animation:glitch 2s infinite alternate;
+  font-size:28px;color:#fff;
 }
-@keyframes glitch {
-  0%{text-shadow:2px 2px #00f,-2px -2px #0ff;}
-  50%{text-shadow:-2px 2px #0ff,2px -2px #00f;}
-  100%{text-shadow:2px -2px #00f,-2px 2px #0ff;}
+header .logo-wrap {
+  display:flex;align-items:center;gap:10px;
+}
+header .logo-wrap img {
+  width:36px;height:36px;border-radius:50%;cursor:pointer;
 }
 nav a {
   color:#fff;text-decoration:none;margin:0 10px;
-  font-weight:bold;position:relative;font-size:18px;
+  font-weight:bold;position:relative;font-size:16px;
 }
 nav a:after {
-  content:'';position:absolute;left:0;bottom:-4px;width:0;height:2px;background:#00f;transition:.3s;
+  content:'';position:absolute;left:0;bottom:-4px;width:0;height:2px;background:#fff;transition:.3s;
 }
 nav a:hover:after {width:100%;}
-.main {
-  padding-top:220px;display:flex;flex-direction:column;align-items:center;min-height:100vh;animation:fadeIn 1.5s ease;
+section {
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:100px 20px;
 }
-@keyframes fadeIn {from{opacity:0;}to{opacity:1;}}
-.card {
-  background:rgba(0,0,50,0.8);
+
+/* HERO */
+.hero-content {
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  gap:40px;
+  flex-wrap:wrap;
+}
+.planet-container {
+  width:280px;height:280px;
+  border-radius:30px;
+  background:rgba(255,255,255,0.05);
+  box-shadow:0 0 20px rgba(255,255,255,0.2), inset 0 0 20px rgba(0,0,0,0.5);
+  display:flex;justify-content:center;align-items:center;
+}
+#planet {
+  width:240px;height:240px;border-radius:50%;
+}
+.hero-text h2 {
+  font-size:38px;
+  color:#fff;
+}
+.hero-text p {
+  font-size:18px;color:#ccc;max-width:500px;
+}
+
+/* CARDS */
+.scripts .card {
+  background:rgba(255,255,255,0.05);
   border-radius:20px;
   padding:20px;text-align:center;
-  box-shadow:0 0 25px rgba(0,150,255,0.5);
-  transition:transform .5s,box-shadow .5s;
+  box-shadow:0 0 20px rgba(255,255,255,0.2);
+  transition:transform .5s;
   cursor:pointer;
-  animation:float 3s infinite ease-in-out, glow 2s infinite alternate;
+  margin:20px;
 }
-@keyframes float {0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
-@keyframes glow {0%{box-shadow:0 0 15px #00f;}100%{box-shadow:0 0 40px #0ff;}}
-.card:hover {transform:scale(1.08);}
+.card:hover {transform:scale(1.05);}
 .card img {max-width:300px;border-radius:10px;filter:blur(2px);transition:.5s;}
 .card img:hover {filter:blur(0);}
 button {
-  background:linear-gradient(90deg,#00f,#0055ff);
-  border:none;padding:12px 24px;margin-top:15px;
+  background:#000;
+  border:1px solid #fff;
+  padding:12px 24px;margin-top:15px;
   border-radius:12px;cursor:pointer;font-weight:bold;color:#fff;
-  box-shadow:0 0 10px #00f;transition:.3s;position:relative;overflow:hidden;
+  transition:.3s;
 }
-button:hover {box-shadow:0 0 20px #00f,0 0 40px #0ff;transform:scale(1.05);}
-button:after {
-  content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
-  background:rgba(255,255,255,0.2);transform:skewX(-20deg);transition:.5s;
-}
-button:hover:after {left:100%;}
-#details {display:none;flex-direction:column;align-items:center;animation:fadeIn 1s ease;}
+button:hover {background:#444;color:#fff;}
+#details {display:none;flex-direction:row;gap:30px;align-items:flex-start;animation:fadeIn 1s ease;}
 .injector {
-  background:#001; padding:15px; margin:15px; border-radius:15px;
+  background:#111; padding:15px; margin:15px 0; border-radius:15px;
   font-family:monospace; color:#0ff; user-select:none;
-  box-shadow:inset 0 0 10px #00f; position:relative;
+  box-shadow:inset 0 0 10px #555; position:relative;
 }
-.injector:after {content:'|'; position:absolute; right:5px; animation:blink 1s infinite; color:#0ff;}
-@keyframes blink {0%,50%{opacity:1;}50.01%,100%{opacity:0;}}
+.injector:after {
+  content:'|';
+  position:absolute;
+  right:5px;
+  animation:blink 1s infinite;
+  color:#fff; /* белый блинк */
+}
+@keyframes blink {0%,50%{opacity:1;}50.01%,100%{opacity:0;} }
 .toast {
   position:fixed;bottom:20px;right:20px;
-  background:#00f;color:#fff;padding:10px 20px;
-  border-radius:10px;display:none;box-shadow:0 0 20px #00f;
+  background:#000;color:#fff;padding:10px 20px;
+  border-radius:10px;display:none;border:1px solid #fff;
   animation:slideUp .5s ease;
 }
-@keyframes slideUp {from{transform:translateY(50px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-.loader {position:fixed;top:0;left:0;width:100%;height:100%;
+@keyframes slideUp {from{transform:translateY(50px);opacity:0;}to{transform:translateY(0);opacity:1;} }
+
+/* LOADER */
+.loader {
+  position:fixed;top:0;left:0;width:100%;height:100%;
   background:#000;display:flex;justify-content:center;align-items:center;
-  font-size:40px;color:#0ff;z-index:9999;flex-direction:column;}
+  z-index:9999;
+}
+.loader-box {
+  width:300px;height:120px;
+  border-radius:40px;
+  background:#111;
+  border:1px solid #fff;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:20px;
+}
+.loader-box h2 {
+  font-size:20px;color:#fff;margin-bottom:15px;
+}
+.progress {
+  width:220px;height:12px;border-radius:10px;
+  background:#222;overflow:hidden;position:relative;
+}
+.progress-bar {
+  width:0;height:100%;
+  background:#fff;
+  transition:width 0.3s;
+}
+
+/* SUPPORT + FOOTER */
+.support h2 {font-size:32px;color:#fff;}
+.support a {
+  margin-top:20px;display:inline-flex;align-items:center;gap:10px;
+  padding:12px 24px;
+  background:#000;
+  border:1px solid #fff;
+  border-radius:12px;color:#fff;text-decoration:none;
+  font-weight:bold;
+}
+.support a:hover {background:#444;}
+.support a img {width:20px;height:20px;}
+footer {
+  text-align:center;padding:20px;background:#000;
+  border-top:1px solid #fff;
+}
+footer p {color:#777;}
 </style>
 </head>
 <body>
 <canvas id="bg"></canvas>
-<div class="loader" id="loader"><div id="loaderText"></div></div>
-<header>
-<h1>DARKHUB</h1>
-<nav>
-<a href="#" id="scriptsLink">All scripts</a>
-<a href="https://discord.gg/DHTevEze" target="_blank">Support</a>
-</nav>
+
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="loader-box">
+    <h2>Loading DARKHUB...</h2>
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  </div>
+</div>
+
+<header id="header">
+  <div class="logo-wrap">
+    <a href="https://discord.gg/2vNPe4VTDK" target="_blank">
+      <img src="https://cdn.discordapp.com/icons/1396910014081269961/ca818de87a059df72510ac00b9bca249.webp" alt="Discord">
+    </a>
+    <h1>DARKHUB</h1>
+  </div>
+  <nav>
+    <a href="#hero">Home</a>
+    <a href="#scripts">Scripts</a>
+    <a href="#support">Support</a>
+  </nav>
 </header>
-<main class="main" id="mainContent">
-  <div class="card" id="card">
-    <img src="https://i.ibb.co/8DhkJYHt/brainrot.jpg">
-    <h2>Steal A Brainrot</h2>
-    <p>The great script for steal a brainrot</p>
-    <button id="getBtn">Get</button>
-  </div>
-  <div id="details">
-    <img src="https://i.ibb.co/8DhkJYHt/brainrot.jpg" style="max-width:300px;border-radius:10px;">
-    <h2>Steal A Brainrot</h2>
-    <p>The great script for steal a brainrot</p>
-    <div class="injector" id="injector">loadstring(game:HttpGet("https://pastebin.com/raw/QMwqB55E"))()</div>
-    <button id="copyBtn">Copy</button>
-    <button id="backBtn">Back to scripts</button>
-  </div>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="planet-container">
+        <canvas id="planet" width="240" height="240"></canvas>
+      </div>
+      <div class="hero-text">
+        <h2>Welcome to DARKHUB</h2>
+        <p>The ultimate Roblox script hub. Fast, powerful and easy to use. Explore our scripts and dominate your games.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCRIPTS -->
+  <section class="scripts" id="scripts">
+    <h2 style="color:#fff;">Available Scripts</h2>
+    <div class="card" id="card">
+      <img src="https://i.ibb.co/8DhkJYHt/brainrot.jpg">
+      <h2>Steal A Brainrot</h2>
+      <p>The great script for steal a brainrot</p>
+      <button id="getBtn">Get</button>
+    </div>
+
+    <!-- DETAILS -->
+    <div id="details">
+      <div class="script-info">
+        <img src="https://i.ibb.co/8DhkJYHt/brainrot.jpg" style="max-width:300px;border-radius:10px;">
+        <h2>Steal A Brainrot</h2>
+        <p>The great script for steal a brainrot</p>
+        <div class="injector" id="injector">loadstring(game:HttpGet("https://pastebin.com/raw/QMwqB55E"))()</div>
+        <button id="copyBtn">Copy</button>
+        <button id="backBtn">Back to scripts</button>
+      </div>
+
+      <!-- RIGHT STATS -->
+      <div class="script-stats" style="
+        min-width:220px;
+        background:rgba(255,255,255,0.05);
+        padding:20px;
+        border-radius:20px;
+        border:1px solid #fff;
+        display:flex;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+      ">
+        <button style="
+          display:flex;
+          align-items:center;
+          gap:8px;
+          padding:10px 16px;
+          border-radius:12px;
+          border:1px solid #fff;
+          background:#000;
+          cursor:pointer;
+          font-weight:bold;
+          color:#fff;
+          transition:.3s;
+        ">
+          <img src="https://www.xeno.onl/images/Discord-Icon-White.png" style="width:16px;height:16px;">
+          Support
+        </button>
+
+        <h3 style="margin-top:10px;">Executors tested:</h3>
+        <div style="display:flex;align-items:center;gap:8px;margin:4px 0;">
+          <a href="https://www.xeno.onl/" target="_blank" style="display:flex;align-items:center;gap:6px;color:#fff;text-decoration:none;">
+            <img src="https://thexenoexecutor.com/wp-content/uploads/2025/06/xeno-executor-logo.png" style="width:20px;height:20px;">
+            Xeno
+          </a>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin:4px 0;">
+          <a href="https://getswift.vip/" target="_blank" style="display:flex;align-items:center;gap:6px;color:#fff;text-decoration:none;">
+            <img src="https://cdn.discordapp.com/icons/1311387776893321337/b71a1d06ae2e860d868b74c0da043a2f.webp" style="width:20px;height:20px;">
+            Swift
+          </a>
+        </div>
+
+        <h3 style="margin-top:10px;">STATUS:</h3>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:12px;height:12px;background:orange;border-radius:50%;"></div>
+          work 50/50
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUPPORT -->
+  <section class="support" id="support">
+    <h2>Need Help?</h2>
+    <a href="https://discord.gg/2vNPe4VTDK" target="_blank">
+      <img src="https://www.xeno.onl/images/Discord-Icon-White.png"> Join our Discord
+    </a>
+  </section>
 </main>
+
+<footer>
+  <p>© 2025 DARKHUB. All rights reserved.</p>
+</footer>
+
 <div class="toast" id="toast">Copied!</div>
+
 <script>
-const loader=document.getElementById('loader');
-const loaderText=document.getElementById('loaderText');
-const texts=['L','Lo','Loa','Load','Load.','Load..','Load...'];
-let idx=0;
-setInterval(()=>{loaderText.textContent=texts[idx++];if(idx===texts.length)idx=0;},300);
-setTimeout(()=>{loader.style.display='none';},Math.random()*(5200-2300)+2300);
+/* LOADER (реальная + анимация header) */
+window.addEventListener("load",()=>{
+  document.getElementById("progressBar").style.width="100%";
+  setTimeout(()=>{
+    document.getElementById("loader").style.display="none";
+    document.getElementById("header").classList.add("show");
+  },500);
+});
+
+/* PLANET */
+const planetCanvas=document.getElementById("planet");
+const ctxP=planetCanvas.getContext("2d");
+planetCanvas.width=240;planetCanvas.height=240;
+let angle=0;
+function drawPlanet(){
+  ctxP.clearRect(0,0,240,240);
+  ctxP.save();
+  ctxP.translate(120,120);
+  ctxP.rotate(angle);
+  ctxP.beginPath();
+  ctxP.arc(0,0,100,0,Math.PI*2);
+  ctxP.strokeStyle="rgba(255,255,255,0.4)";
+  ctxP.lineWidth=2;
+  ctxP.stroke();
+  ctxP.restore();
+  angle+=0.002;
+  requestAnimationFrame(drawPlanet);
+}
+drawPlanet();
+
+/* SCRIPTS DETAILS */
 const getBtn=document.getElementById('getBtn');
 const backBtn=document.getElementById('backBtn');
 const card=document.getElementById('card');
 const details=document.getElementById('details');
 getBtn.onclick=()=>{card.style.display='none';details.style.display='flex';};
 backBtn.onclick=()=>{details.style.display='none';card.style.display='block';};
+
+/* COPY */
 const copyBtn=document.getElementById('copyBtn');
 const injector=document.getElementById('injector');
 const toast=document.getElementById('toast');
-copyBtn.onclick=async()=>{let text=injector.textContent;try{await navigator.clipboard.writeText(text);}catch(e){let t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);}toast.style.display='block';setTimeout(()=>toast.style.display='none',2000);};
-document.addEventListener('contextmenu',e=>e.preventDefault());
-document.addEventListener('keydown',e=>{
-if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key.toUpperCase()))||(e.ctrlKey&&e.key.toUpperCase()==='U')){
-e.preventDefault();alert('Access Denied');window.location.reload();}
-});
-(function(){let element=new Image();Object.defineProperty(element,'id',{get:function(){alert('Access Denied');window.location.reload();}});console.log(element);})();
+copyBtn.onclick=async()=>{
+  let text=injector.textContent;
+  try{await navigator.clipboard.writeText(text);}
+  catch(e){
+    let t=document.createElement('textarea');t.value=text;
+    document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);
+  }
+  toast.style.display='block';
+  setTimeout(()=>toast.style.display='none',2000);
+};
+
+/* BACKGROUND */
 const canvas=document.getElementById('bg');const ctx=canvas.getContext('2d');
 let w,h;function resize(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight;}
 window.addEventListener('resize',resize);resize();
-let t=0;function draw(){ctx.clearRect(0,0,w,h);ctx.fillStyle='#000';ctx.fillRect(0,0,w,h);
-for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(0,h/2);
-for(let x=0;x<=w;x+=10){ctx.lineTo(x,h/2+Math.sin(x*0.01+t+i)*50);}
-ctx.strokeStyle=`rgba(0,150,255,0.3)`;ctx.lineWidth=2;ctx.stroke();}
-t+=0.02;requestAnimationFrame(draw);}draw();
-document.addEventListener('mousemove',e=>{
-const x=(e.clientX/window.innerWidth-0.5)*20;
-const y=(e.clientY/window.innerHeight-0.5)*20;
-document.querySelector('.card').style.transform=`translate(${x}px,${y}px) scale(1.05)`;
-});
+let stars=[];
+for(let i=0;i<100;i++){stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*2});}
+function draw(){
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#000';ctx.fillRect(0,0,w,h);
+  ctx.fillStyle="white";
+  stars.forEach(s=>{
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();
+    s.y+=0.2;if(s.y>h){s.y=0;s.x=Math.random()*w;}
+  });
+  requestAnimationFrame(draw);
+}
+draw();
 </script>
-</body>
-</html>
+</body></html>
